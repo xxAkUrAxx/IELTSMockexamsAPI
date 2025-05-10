@@ -336,25 +336,6 @@
   </div>
 
   <script>
-    document.addEventListener('contextmenu', function (e) {
-    const selection = window.getSelection();
-    const selectedText = selection.toString();
-
-    if (selectedText.trim() !== "") {
-        e.preventDefault();  // Prevent right-click menu
-
-        const range = selection.getRangeAt(0);
-        const span = document.createElement('span');
-        span.className = 'highlighted';
-        span.textContent = selectedText;
-
-        range.deleteContents();
-        range.insertNode(span);
-
-        selection.removeAllRanges();
-    }
-    });
-    
     const timerEl = document.getElementById("timer");
     const startTimeKey = "ReadingTest_StartTime";
     let tabAwayStart = null;

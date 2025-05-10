@@ -210,9 +210,10 @@ function downloadPNG() {
   });
 }
 
-function submitFinalResults() {
-  const element = document.querySelector(".results-box");
-  if (!element) return console.error("Results container not found.");
+const name = localStorage.getItem("Student_Name") || "Name";
+const surname = localStorage.getItem("Student_Surname") || "Surname";
+const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
+
 
   html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
     const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
