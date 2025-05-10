@@ -107,7 +107,6 @@
 <body>
 
 <div class="timer" id="timerDisplay">00:00 / 00:00</div>
-<button class="reset-timer-btn" onclick="resetTimer()">⏱️ Reset Timer</button>
 
 <div class="info-header">
   <div id="studentInfo"></div>
@@ -151,6 +150,7 @@
 <button class="continue-button" id="continueButton" onclick="resumeAudio()">▶ Continue Listening</button>
 
 <script>
+
 const audio = document.getElementById("audio");
 const timerDisplay = document.getElementById("timerDisplay");
 const continueBtn = document.getElementById("continueButton");
@@ -191,14 +191,6 @@ function startAudio() {
       });
     }, 2000);
   }
-}
-
-function resetTimer() {
-  audio.pause();
-  audio.currentTime = 0;
-  localStorage.removeItem("Listening4_AudioTime");
-  sessionStorage.removeItem("firstVisitDone_Part4");
-  audio.play();
 }
 
 audio.onended = () => {

@@ -111,6 +111,7 @@
 const netlifyFunctionURL = '/.netlify/functions/saveResults'; // ✅ Update if needed
 
 // ----------------------- STUDENT INFO DISPLAY -----------------------
+
 function displayStudentInfo() {
   const name = localStorage.getItem("Student_Name") || "Name";
   const surname = localStorage.getItem("Student_Surname") || "Surname";
@@ -118,6 +119,7 @@ function displayStudentInfo() {
   document.getElementById("studentInfoDisplay").textContent =
     `Name: ${name} ${surname} | ID: ${id}`;
 }
+
 
 function displayTestName() {
   const test = localStorage.getItem("Test_Name") || "Reading Test 1";

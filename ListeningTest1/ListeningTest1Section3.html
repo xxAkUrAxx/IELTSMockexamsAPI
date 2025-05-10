@@ -123,7 +123,6 @@
 <body>
 
 <div class="timer" id="timerDisplay">00:00 / 00:00</div>
-<button class="reset-timer-btn" onclick="resetTimer()">⏱️ Reset Timer</button>
 <button class="continue-button" id="continueButton" onclick="resumeAudio()">▶ Continue Listening</button>
 
 <div class="message-box" id="messageBox">Going to Section 4...</div>
@@ -261,14 +260,6 @@
         });
       }, 2000);
     }
-  }
-
-  function resetTimer() {
-    audio.pause();
-    audio.currentTime = 0;
-    localStorage.removeItem("Listening3_AudioTime");
-    sessionStorage.removeItem("firstVisitDone");
-    audio.play();
   }
 
   audio.onended = () => {

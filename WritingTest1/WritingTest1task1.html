@@ -199,12 +199,12 @@
     });
 
     function displayStudentInfo() {
-        const name = localStorage.getItem("Student_Name") || "Name";
-        const surname = localStorage.getItem("Student_Surname") || "Surname";
-        const id = localStorage.getItem("Student_ID") || "ID";
-        document.getElementById("studentInfoDisplay").textContent =
-            `Name: ${name}   Surname: ${surname}   ID: ${id}`;
-    }
+  const name = localStorage.getItem("Student_Name") || "Name";
+  const surname = localStorage.getItem("Student_Surname") || "Surname";
+  const id = localStorage.getItem("Student_ID") || "ID";
+  document.getElementById("studentInfoDisplay").textContent =
+    `Name: ${name} ${surname} | ID: ${id}`;
+}
 
     document.addEventListener("visibilitychange", function () {
         const internalNav = localStorage.getItem("internalNav") === "true";
