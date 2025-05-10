@@ -88,6 +88,7 @@
   </div>
 
   <script>
+   
     const answers = [
       "TRUE", "FALSE", "TRUE", "TRUE", "NOT GIVEN", "FALSE",
       ["a wire", "wire"],
@@ -106,169 +107,118 @@
       "YES", "NO", "YES", "YES", "NOT GIVEN",
       "D", "G", "C", "A"
     ];
+// ----------------------- CONFIGURATION -----------------------
+const netlifyFunctionURL = '/.netlify/functions/saveResults'; // ✅ Update if needed
 
-    function displayStudentInfo() {
-      const name = localStorage.getItem("Student_Name") || "Name";
-      const surname = localStorage.getItem("Student_Surname") || "Surname";
-      const id = localStorage.getItem("Student_ID") || "ID";
-      document.getElementById("studentInfoDisplay").textContent =
-        `Name: ${name}   Surname: ${surname}   ID: ${id}`;
-    }
+// ----------------------- STUDENT INFO DISPLAY -----------------------
+function displayStudentInfo() {
+  const name = localStorage.getItem("Student_Name") || "Name";
+  const surname = localStorage.getItem("Student_Surname") || "Surname";
+  const id = localStorage.getItem("Student_ID") || "ID";
+  document.getElementById("studentInfoDisplay").textContent =
+    `Name: ${name} ${surname} | ID: ${id}`;
+}
 
-    function displayTestName() {
-      const test = localStorage.getItem("Test_Name") || "Test";
-      document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
-    }
+function displayTestName() {
+  const test = localStorage.getItem("Test_Name") || "Reading Test 1";
+  document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
+}
 
-    function getStudentAnswers() {
-      const allAnswers = [];
+// ----------------------- ANSWERS AND SCORING -----------------------
+function getStudentAnswers() {
+  const allAnswers = [];
+  for (let i = 1; i <= 13; i++) allAnswers.push((localStorage.getItem(`Reading1_Q${i}`) || "").trim());
+  for (let i = 14; i <= 19; i++) allAnswers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
 
-      for (let i = 1; i <= 13; i++) {
-        const value = localStorage.getItem(`Reading1_Q${i}`) || "";
-        allAnswers.push(value.trim());
+  const q20_21 = JSON.parse(localStorage.getItem("Reading2_Q20_21") || "[]");
+  allAnswers.push(q20_21[0] || "", q20_21[1] || "");
+
+  const q22_23 = JSON.parse(localStorage.getItem("Reading2_Q22_23") || "[]");
+  allAnswers.push(q22_23[0] || "", q22_23[1] || "");
+
+  for (let i = 24; i <= 26; i++) allAnswers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
+
+  const section3 = JSON.parse(localStorage.getItem("Section3Answers") || "{}");
+  for (let i = 27; i <= 40; i++) allAnswers.push((section3[`q${i}`] || "").trim());
+
+  return allAnswers;
+}
+
+function scoreTest() {
+  // Assuming `answers` is already defined with correct answers
+  const studentAnswers = getStudentAnswers();
+  let score = 0;
+
+  for (let i = 0; i < 40; i++) {
+    const correct = answers[i];
+    const student = studentAnswers[i];
+
+    if (Array.isArray(correct)) {
+      if (i >= 6 && i <= 12) {
+        if (correct.includes(student)) score++;
+      } else {
+        if (correct.map(c => c.toUpperCase()).includes(student.toUpperCase())) score++;
       }
-
-      for (let i = 14; i <= 19; i++) {
-        const value = localStorage.getItem(`Reading2_Q${i}`) || "";
-        allAnswers.push(value.trim());
-      }
-
-      const q20_21 = JSON.parse(localStorage.getItem("Reading2_Q20_21") || "[]");
-      allAnswers.push(q20_21[0] || "");
-      allAnswers.push(q20_21[1] || "");
-
-      const q22_23 = JSON.parse(localStorage.getItem("Reading2_Q22_23") || "[]");
-      allAnswers.push(q22_23[0] || "");
-      allAnswers.push(q22_23[1] || "");
-
-      for (let i = 24; i <= 26; i++) {
-        const value = localStorage.getItem(`Reading2_Q${i}`) || "";
-        allAnswers.push(value.trim());
-      }
-
-      const section3 = JSON.parse(localStorage.getItem("Section3Answers") || "{}");
-      for (let i = 27; i <= 40; i++) {
-        const val = section3[`q${i}`] || "";
-        allAnswers.push(val.trim());
-      }
-
-      return allAnswers;
+    } else {
+      if (correct.toUpperCase() === student.toUpperCase()) score++;
     }
+  }
+  return score;
+}
 
-    function scoreTest() {
-      const studentAnswers = getStudentAnswers();
-      let score = 0;
+function convertToBand(score) {
+  const bands = [
+    [39, 9.0], [37, 8.5], [35, 8.0], [33, 7.5], [30, 7.0], [27, 6.5], 
+    [23, 6.0], [19, 5.5], [15, 5.0], [13, 4.5], [10, 4.0], [7, 3.5], 
+    [5, 3.0], [3, 2.5], [1, 2.0], [0, 0.0]
+  ];
+  for (const [min, band] of bands) if (score >= min) return band;
+}
 
-      for (let i = 0; i < 40; i++) {
-        const key = answers[i];
-        const student = studentAnswers[i];
+function showAnswerComparison(studentAnswers) {
+  const table = document.getElementById("comparisonBody");
+  table.innerHTML = '';
 
-        if (Array.isArray(key)) {
-          if (i >= 6 && i <= 12) {
-            if (key.includes(student)) score++;
-          } else {
-            if (key.some(k => k.toUpperCase() === student.toUpperCase())) score++;
-          }
-        } else {
-          if (key.toUpperCase() === student.toUpperCase()) score++;
-        }
-      }
+  for (let i = 0; i < 40; i++) {
+    const correct = answers[i];
+    const student = studentAnswers[i] || "";
+    const correctDisplay = Array.isArray(correct) ? correct.join(" / ") : correct;
+    const isCorrect = Array.isArray(correct)
+      ? correct.map(c => c.toUpperCase()).includes(student.toUpperCase())
+      : correct.toUpperCase() === student.toUpperCase();
 
-      return score;
-    }
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>Q${i + 1}</td>
+      <td>${student}</td>
+      <td>${correctDisplay}</td>
+      <td style="color: ${isCorrect ? 'green' : 'red'}; font-weight: bold;">
+        ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+      </td>
+    `;
+    table.appendChild(row);
+  }
+}
 
-    function convertToBand(score) {
-      if (score >= 39) return 9.0;
-      if (score >= 37) return 8.5;
-      if (score >= 35) return 8.0;
-      if (score >= 33) return 7.5;
-      if (score >= 30) return 7.0;
-      if (score >= 27) return 6.5;
-      if (score >= 23) return 6.0;
-      if (score >= 19) return 5.5;
-      if (score >= 15) return 5.0;
-      if (score >= 13) return 4.5;
-      if (score >= 10) return 4.0;
-      if (score >= 7) return 3.5;
-      if (score >= 5) return 3.0;
-      if (score >= 3) return 2.5;
-      if (score >= 1) return 2.0;
-      return 0.0;
-    }
+// ----------------------- PNG & SUBMISSION -----------------------
+function downloadPNG() {
+  const element = document.querySelector(".results-box");
+  const name = localStorage.getItem("Student_Name") || "Name";
+  const surname = localStorage.getItem("Student_Surname") || "Surname";
+  const test = (localStorage.getItem("Test_Name") || "ReadingTest1").replace(/\s+/g, '_');
+  const filename = `${test}_${name}_${surname}.png`;
 
-    function showAnswerComparison(studentAnswers) {
-      const table = document.getElementById("comparisonBody");
+  html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
 
-      for (let i = 0; i < 40; i++) {
-        const correct = answers[i];
-        const student = studentAnswers[i] || "";
-
-        let correctDisplay = Array.isArray(correct) ? correct.join(" / ") : correct;
-        let isCorrect;
-
-        if (Array.isArray(correct)) {
-          if (i >= 6 && i <= 12) {
-            isCorrect = correct.includes(student);
-          } else {
-            isCorrect = correct.map(c => c.toUpperCase()).includes(student.toUpperCase());
-          }
-        } else {
-          isCorrect = correct.toUpperCase() === student.toUpperCase();
-        }
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>Q${i + 1}</td>
-          <td>${student}</td>
-          <td>${correctDisplay}</td>
-          <td style="color: ${isCorrect ? 'green' : 'red'}; font-weight: bold;">
-            ${isCorrect ? '✔ Correct' : '✘ Wrong'}
-          </td>
-        `;
-        table.appendChild(row);
-      }
-    }
-
-    function displayResults() {
-      displayStudentInfo();
-      displayTestName();
-
-      const studentAnswers = getStudentAnswers();
-      const rawScore = scoreTest();
-      const band = convertToBand(rawScore);
-      const conservativeBand = Math.max(0, band - 0.5);
-
-      document.getElementById("scoreDisplay").textContent = `Correct Answers: ${rawScore} / 40`;
-      document.getElementById("bandDisplay").textContent = `Estimated IELTS Band: ${conservativeBand.toFixed(1)}`;
-      document.getElementById("feedbackDisplay").textContent = conservativeBand >= 6 ?
-        "You are performing at a solid level. Keep practising to improve even more." :
-        "You may need more reading practice to meet academic test standards.";
-
-      showAnswerComparison(studentAnswers);
-    }
-
-    function downloadPNG() {
-      const element = document.querySelector(".results-box");
-
-      const name = localStorage.getItem("Student_Name") || "Name";
-      const surname = localStorage.getItem("Student_Surname") || "Surname";
-      const test = localStorage.getItem("Test_Name") || "Test";
-
-      const safeTest = test.replace(/\s+/g, '_');
-      const filename = `${safeTest}_${name}_${surname}.png`;
-
-      html2canvas(element, {
-        backgroundColor: null,
-        scale: 2
-      }).then(canvas => {
-        const link = document.createElement("a");
-        link.download = filename;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      });
-    }
 function submitFinalResults() {
   const element = document.querySelector(".results-box");
+  if (!element) return console.error("Results container not found.");
 
   html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
     const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
@@ -277,32 +227,52 @@ function submitFinalResults() {
     const surname = localStorage.getItem("Student_Surname") || "Surname";
     const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
     const test = localStorage.getItem("Test_Name") || "ReadingTest1";
+    const score = document.getElementById("scoreDisplay")?.textContent || "N/A";
+    const band = document.getElementById("bandDisplay")?.textContent || "N/A";
+    const feedback = document.getElementById("feedbackDisplay")?.textContent || "N/A";
 
     const resultsObject = {
       studentName: `${name} ${surname}`,
       studentNumber: studentNumber,
       testName: test,
-      score: document.getElementById("scoreDisplay").textContent,
-      band: document.getElementById("bandDisplay").textContent,
-      feedback: document.getElementById("feedbackDisplay").textContent,
+      score: score,
+      band: band,
+      feedback: feedback,
       imageBase64: imageBase64
     };
 
-    fetch('/.netlify/functions/saveResults', {
+    fetch(netlifyFunctionURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(resultsObject)
     })
     .then(response => response.json())
-    .then(data => console.log('Results sent:', data))
-    .catch(err => console.error('Failed to send results:', err));
+    .then(data => console.log('📨 Results sent successfully:', data))
+    .catch(err => console.error('❌ Failed to send results:', err));
   });
 }
 
-    window.onload = () => {
-  displayResults();
-  submitFinalResults(); // Auto-send results on page load
+// ----------------------- ON LOAD -----------------------
+window.onload = () => {
+  displayStudentInfo();
+  displayTestName();
+
+  const studentAnswers = getStudentAnswers();
+  const rawScore = scoreTest();
+  const band = convertToBand(rawScore);
+  const conservativeBand = Math.max(0, band - 0.5);
+
+  document.getElementById("scoreDisplay").textContent = `Correct Answers: ${rawScore} / 40`;
+  document.getElementById("bandDisplay").textContent = `Estimated IELTS Band: ${conservativeBand.toFixed(1)}`;
+  document.getElementById("feedbackDisplay").textContent = conservativeBand >= 6
+    ? "You are performing at a solid level. Keep practising to improve even more."
+    : "You may need more reading practice to meet academic test standards.";
+
+  showAnswerComparison(studentAnswers);
+
+  // Auto-send results after loading
+  setTimeout(submitFinalResults, 3000);
 };
-  </script>
+</script>
 </body>
 </html>
