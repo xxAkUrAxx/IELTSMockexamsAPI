@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Listening Test Results</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: white;
+    }
+    .results-box {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: visible;
+      text-align: center;
+    }
+    h1 {
+      color: #1e90ff;
+    }
+    .score {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    .band {
+      font-size: 28px;
+      color: #2c3e50;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .student-info, .test-name {
+      text-align: right;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 14px;
+      margin-top: 20px;
+      cursor: pointer;
+      border: none;
+      background-color: #0073e6;
+      color: white;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+    }
+    .wrong {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="results-box" id="resultsContainer">
+    <div class="student-info" id="studentInfoDisplay"></div>
+    <div class="test-name" id="testNameDisplay"></div>
+    <h1>Your IELTS Listening Score</h1>
+    <div class="score" id="scoreDisplay"></div>
+    <div class="band" id="bandDisplay"></div>
+    <div class="feedback" id="feedbackDisplay"></div>
+    <button onclick="downloadPNG()">🖼️ Download PNG</button>
+    
+
+    <table id="comparisonTable">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Your Answer</th>
+          <th>Correct Answer</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="comparisonBody"></tbody>
+    </table>
+  </div>
+
+<script>
+// ----------------------- CONFIGURATION of Answers -----------------------
+const correctAnswers = {
+  Q1: ['Dress your Best', 'dress your best'],
+  Q2: ['Kirby'],
+  Q3: ['09356 788 545'],
+  Q4: ['extra charge', '(extra) charge'],
+  Q5: ['American Express', 'american express'],
+  Q6: ['black', 'dark'],
+  Q7: ['Glass desk', 'Glass desks'],
+  Q8: ['TG 586', 'TG586'],
+  Q9: ['yellow'],
+  Q10: ['coffee table'],
+  Q11: ['plan'],
+  Q12: ['on foot'],
+  Q13: ['sensible clothes'],
+  Q14: ['weather forecast', 'forecast'],
+  Q15: ['volunteers'],
+  Q16: ['accidents'],
+  Q17: ['finish line'],
+  Q18: ['C'],
+  Q19: ['B'],
+  Q20: ['E'],
+  Q21: ['C'],
+  Q22: ['B'],
+  Q23: ['A'],
+  Q24: ['C'],
+  Q25: ['A'],
+  Q26: ['B'],
+  Q27_28: ['D', 'E'],
+  Q29_30: ['A', 'C'],
+  Q31: ['rain shadow'],
+  Q32: ['few inches'],
+  Q33: ['other minerals', 'minerals'],
+  Q34: ['collect'],
+  Q35: ['green stem', 'stem'],
+  Q36: ['expand'],
+  Q37: ['white hairs'],
+  Q38: ['sharp thorns', 'thorns'],
+  Q39: ['very tough', 'tough'],
+  Q40: ['plastic']
+};
+
+// ----------------------- DISPLAY FUNCTIONS -----------------------
+function displayStudentInfo() {
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const id = localStorage.getItem("studentNumber") || "ID";
+  document.getElementById("studentInfoDisplay").textContent = 
+    `Name: ${name} ${surname} | ID: ${id}`;
+}
+
+function displayTestName() {
+  const test = localStorage.getItem("testId") || "Listening Test 1";
+  document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
+}
+
+function getStudentAnswers() {
+  const answers = {};
+  for (let i = 1; i <= 30; i++) {
+    const key = `Listening${Math.ceil(i / 10)}_Q${i}`;
+    answers[`Q${i}`] = (localStorage.getItem(key) || '').trim();
+  }
+  answers['Q27_28'] = JSON.parse(localStorage.getItem('Listening3_Q27_28') || '[]');
+  answers['Q29_30'] = JSON.parse(localStorage.getItem('Listening3_Q29_30') || '[]');
+  return answers;
+}
+
+function evaluateMultiSelect(selected, correct) {
+  let points = 0;
+  selected.forEach(val => {
+    if (correct.includes(val)) points++;
+  });
+  return points > 2 ? 2 : points;
+}
+
+function calculateBand(score) {
+  if (score >= 39) return 9;
+  if (score >= 37) return 8.5;
+  if (score >= 35) return 8;
+  if (score >= 32) return 7.5;
+  if (score >= 30) return 7;
+  if (score >= 26) return 6.5;
+  if (score >= 23) return 6;
+  if (score >= 18) return 5.5;
+  if (score >= 16) return 5;
+  if (score >= 13) return 4.5;
+  return 4;
+}
+
+function displayResults() {
+  displayStudentInfo();
+  displayTestName();
+
+  const answers = getStudentAnswers();
+  let score = 0;
+
+  for (let i = 1; i <= 26; i++) {
+    const correct = correctAnswers[`Q${i}`];
+    if (correct && correct.includes(answers[`Q${i}`])) score++;
+  }
+
+  score += evaluateMultiSelect(answers['Q27_28'], correctAnswers['Q27_28']);
+  score += evaluateMultiSelect(answers['Q29_30'], correctAnswers['Q29_30']);
+
+  const band = calculateBand(score);
+  const conservativeBand = Math.max(0, band - 0.5);
+
+  document.getElementById("scoreDisplay").textContent = `Correct Answers: ${score} / 30`;
+  document.getElementById("bandDisplay").textContent = `Estimated IELTS Band: ${conservativeBand.toFixed(1)}`;
+  document.getElementById("feedbackDisplay").textContent = conservativeBand >= 6 ?
+    "Good job! You're performing at a solid level." :
+    "Consider practicing more for higher accuracy.";
+
+  populateComparisonTable(answers);
+}
+
+function populateComparisonTable(answers) {
+  const table = document.getElementById("comparisonBody");
+  table.innerHTML = '';
+
+  for (let i = 1; i <= 26; i++) {
+    const correct = correctAnswers[`Q${i}`] || [];
+    const user = answers[`Q${i}`] || '';
+    const isCorrect = correct.includes(user);
+    table.innerHTML += `
+      <tr>
+        <td>Q${i}</td>
+        <td>${user}</td>
+        <td>${correct.join(' / ')}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? '✔ Correct' : '✘ Wrong'}</td>
+      </tr>`;
+  }
+
+  [['Q27_28', '27-28'], ['Q29_30', '29-30']].forEach(([key, label]) => {
+    const correct = correctAnswers[key] || [];
+    const user = answers[key] || [];
+    const points = evaluateMultiSelect(user, correct);
+    table.innerHTML += `
+      <tr>
+        <td>Q${label}</td>
+        <td>${user.join(', ')}</td>
+        <td>${correct.join(' / ')}</td>
+        <td class="${points > 0 ? 'correct' : 'wrong'}">${points > 0 ? `✔ ${points} Correct` : '✘ Wrong'}</td>
+      </tr>`;
+  });
+}
+
+// ----------------------- PNG & SUBMISSION FUNCTIONS -----------------------
+function downloadPNG() {
+  const element = document.getElementById("resultsContainer");
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const test = localStorage.getItem("testId") || "ListeningTest1";
+  const filename = `${test}_${name}_${surname}.png`;
+
+  if (!element) return console.error("Results container not found.");
+
+  html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+function submitFinalResults() {
+  const element = document.getElementById("resultsContainer");
+  if (!element) return console.error("Results container not found.");
+
+  html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
+    const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
+
+    const name = localStorage.getItem("studentFirstName") || "Name";
+    const surname = localStorage.getItem("studentSurname") || "Surname";
+    const studentNumber = localStorage.getItem("studentNumber") || "UnknownID";
+    const test = localStorage.getItem("testId") || "ListeningTest1";
+
+    const resultsObject = {
+      studentName: `${name} ${surname}`,
+      studentNumber: studentNumber,
+      testName: test,
+      score: document.getElementById("scoreDisplay")?.textContent || "N/A",
+      band: document.getElementById("bandDisplay")?.textContent || "N/A",
+      feedback: document.getElementById("feedbackDisplay")?.textContent || "N/A",
+      imageBase64: imageBase64
+    };
+
+    fetch('/.netlify/functions/saveResults', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resultsObject)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Results sent successfully:', data))
+    .catch(err => console.error('Failed to send results:', err));
+  });
+}
+
+// ----------------------- LOAD & INIT -----------------------
+window.submitFinalResults = submitFinalResults;
+
+window.onload = () => {
+  displayResults();
+  setTimeout(submitFinalResults, 3000); // 3 seconds to ensure rendering is complete
+};
+</script>
+</body>
+</html>

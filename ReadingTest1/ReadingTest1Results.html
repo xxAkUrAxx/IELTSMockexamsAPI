@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IELTS Reading Results</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: white !important;
+    }
+    .results-box {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white !important;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: none !important;
+      overflow: visible;
+    }
+    h1 {
+      color: #1e90ff;
+    }
+    .score {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    .band {
+      font-size: 28px;
+      color: #2c3e50;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .student-info, .test-name {
+      text-align: right;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 14px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="results-box">
+    <div class="student-info" id="studentInfoDisplay"></div>
+    <div class="test-name" id="testNameDisplay"></div>
+    <h1>Your IELTS Reading Score</h1>
+    <div class="score" id="scoreDisplay"></div>
+    <div class="band" id="bandDisplay"></div>
+    <div class="feedback" id="feedbackDisplay"></div>
+    <button onclick="downloadPNG()">🖼️ Download PNG</button>
+
+    <table id="comparisonTable">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Your Answer</th>
+          <th>Correct Answer</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="comparisonBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const answers = [
+      "TRUE", "FALSE", "TRUE", "TRUE", "NOT GIVEN", "FALSE",
+      ["a wire", "wire"],
+      ["solar power"],
+      ["an inflatable dummy", "inflatable dummy"],
+      ["a mark"],
+      ["an extending arm", "extending arm"],
+      ["movement"],
+      ["two way communication", "two-way communication"],
+      "D", "E", "A", "F", "A", "G",
+      ["C", "D"], ["D", "C"], ["B", "C"], ["C", "B"],
+      ["forest footprint"],
+      ["decaying plants"],
+      ["60%", "60 percent", "60 per cent"],
+      "C", "B", "A", "D", "B",
+      "YES", "NO", "YES", "YES", "NOT GIVEN",
+      "D", "G", "C", "A"
+    ];
+
+    function displayStudentInfo() {
+      const name = localStorage.getItem("Student_Name") || "Name";
+      const surname = localStorage.getItem("Student_Surname") || "Surname";
+      const id = localStorage.getItem("Student_ID") || "ID";
+      document.getElementById("studentInfoDisplay").textContent =
+        `Name: ${name}   Surname: ${surname}   ID: ${id}`;
+    }
+
+    function displayTestName() {
+      const test = localStorage.getItem("Test_Name") || "Test";
+      document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
+    }
+
+    function getStudentAnswers() {
+      const allAnswers = [];
+
+      for (let i = 1; i <= 13; i++) {
+        const value = localStorage.getItem(`Reading1_Q${i}`) || "";
+        allAnswers.push(value.trim());
+      }
+
+      for (let i = 14; i <= 19; i++) {
+        const value = localStorage.getItem(`Reading2_Q${i}`) || "";
+        allAnswers.push(value.trim());
+      }
+
+      const q20_21 = JSON.parse(localStorage.getItem("Reading2_Q20_21") || "[]");
+      allAnswers.push(q20_21[0] || "");
+      allAnswers.push(q20_21[1] || "");
+
+      const q22_23 = JSON.parse(localStorage.getItem("Reading2_Q22_23") || "[]");
+      allAnswers.push(q22_23[0] || "");
+      allAnswers.push(q22_23[1] || "");
+
+      for (let i = 24; i <= 26; i++) {
+        const value = localStorage.getItem(`Reading2_Q${i}`) || "";
+        allAnswers.push(value.trim());
+      }
+
+      const section3 = JSON.parse(localStorage.getItem("Section3Answers") || "{}");
+      for (let i = 27; i <= 40; i++) {
+        const val = section3[`q${i}`] || "";
+        allAnswers.push(val.trim());
+      }
+
+      return allAnswers;
+    }
+
+    function scoreTest() {
+      const studentAnswers = getStudentAnswers();
+      let score = 0;
+
+      for (let i = 0; i < 40; i++) {
+        const key = answers[i];
+        const student = studentAnswers[i];
+
+        if (Array.isArray(key)) {
+          if (i >= 6 && i <= 12) {
+            if (key.includes(student)) score++;
+          } else {
+            if (key.some(k => k.toUpperCase() === student.toUpperCase())) score++;
+          }
+        } else {
+          if (key.toUpperCase() === student.toUpperCase()) score++;
+        }
+      }
+
+      return score;
+    }
+
+    function convertToBand(score) {
+      if (score >= 39) return 9.0;
+      if (score >= 37) return 8.5;
+      if (score >= 35) return 8.0;
+      if (score >= 33) return 7.5;
+      if (score >= 30) return 7.0;
+      if (score >= 27) return 6.5;
+      if (score >= 23) return 6.0;
+      if (score >= 19) return 5.5;
+      if (score >= 15) return 5.0;
+      if (score >= 13) return 4.5;
+      if (score >= 10) return 4.0;
+      if (score >= 7) return 3.5;
+      if (score >= 5) return 3.0;
+      if (score >= 3) return 2.5;
+      if (score >= 1) return 2.0;
+      return 0.0;
+    }
+
+    function showAnswerComparison(studentAnswers) {
+      const table = document.getElementById("comparisonBody");
+
+      for (let i = 0; i < 40; i++) {
+        const correct = answers[i];
+        const student = studentAnswers[i] || "";
+
+        let correctDisplay = Array.isArray(correct) ? correct.join(" / ") : correct;
+        let isCorrect;
+
+        if (Array.isArray(correct)) {
+          if (i >= 6 && i <= 12) {
+            isCorrect = correct.includes(student);
+          } else {
+            isCorrect = correct.map(c => c.toUpperCase()).includes(student.toUpperCase());
+          }
+        } else {
+          isCorrect = correct.toUpperCase() === student.toUpperCase();
+        }
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>Q${i + 1}</td>
+          <td>${student}</td>
+          <td>${correctDisplay}</td>
+          <td style="color: ${isCorrect ? 'green' : 'red'}; font-weight: bold;">
+            ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+          </td>
+        `;
+        table.appendChild(row);
+      }
+    }
+
+    function displayResults() {
+      displayStudentInfo();
+      displayTestName();
+
+      const studentAnswers = getStudentAnswers();
+      const rawScore = scoreTest();
+      const band = convertToBand(rawScore);
+      const conservativeBand = Math.max(0, band - 0.5);
+
+      document.getElementById("scoreDisplay").textContent = `Correct Answers: ${rawScore} / 40`;
+      document.getElementById("bandDisplay").textContent = `Estimated IELTS Band: ${conservativeBand.toFixed(1)}`;
+      document.getElementById("feedbackDisplay").textContent = conservativeBand >= 6 ?
+        "You are performing at a solid level. Keep practising to improve even more." :
+        "You may need more reading practice to meet academic test standards.";
+
+      showAnswerComparison(studentAnswers);
+    }
+
+    function downloadPNG() {
+      const element = document.querySelector(".results-box");
+
+      const name = localStorage.getItem("Student_Name") || "Name";
+      const surname = localStorage.getItem("Student_Surname") || "Surname";
+      const test = localStorage.getItem("Test_Name") || "Test";
+
+      const safeTest = test.replace(/\s+/g, '_');
+      const filename = `${safeTest}_${name}_${surname}.png`;
+
+      html2canvas(element, {
+        backgroundColor: null,
+        scale: 2
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+function submitFinalResults() {
+  const element = document.querySelector(".results-box");
+
+  html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
+    const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
+
+    const name = localStorage.getItem("Student_Name") || "Name";
+    const surname = localStorage.getItem("Student_Surname") || "Surname";
+    const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
+    const test = localStorage.getItem("Test_Name") || "ReadingTest1";
+
+    const resultsObject = {
+      studentName: `${name} ${surname}`,
+      studentNumber: studentNumber,
+      testName: test,
+      score: document.getElementById("scoreDisplay").textContent,
+      band: document.getElementById("bandDisplay").textContent,
+      feedback: document.getElementById("feedbackDisplay").textContent,
+      imageBase64: imageBase64
+    };
+
+    fetch('/.netlify/functions/saveResults', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resultsObject)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Results sent:', data))
+    .catch(err => console.error('Failed to send results:', err));
+  });
+}
+
+    window.onload = () => {
+  displayResults();
+  submitFinalResults(); // Auto-send results on page load
+};
+  </script>
+</body>
+</html>

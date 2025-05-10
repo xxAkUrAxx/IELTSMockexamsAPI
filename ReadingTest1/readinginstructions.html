@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IELTS Reading Instructions</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-bar img {
+      height: 40px;
+    }
+
+    .student-info {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .instructions-container {
+      background: white;
+      padding: 30px;
+      margin: 40px auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .instructions-container ul {
+      text-align: left;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .instructions-container button {
+      padding: 12px 20px;
+      font-size: 16px;
+    }
+
+    .site-logo {
+      max-height: 120px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <img src="../narrow_logo.png" alt="Header Logo">
+    <div class="student-info" id="studentInfo"></div>
+  </div>
+
+  <div class="instructions-container">
+    <img src="../logo.png" alt="Main Logo" class="site-logo" />
+    <h2>Reading Test Instructions</h2>
+
+    <ul>
+      <li><strong>🕒 Test Duration:</strong> 60 minutes</li>
+      <li><strong>Sections:</strong> 3</li>
+      <li><strong>Number of Questions:</strong> 40</li>
+      <li><strong>Split-Screen View:</strong> The reading passage appears on the left side of the screen, and the questions are on the right.</li>
+      <li><strong>Navigation:</strong> You can move between questions and sections using the navigation bar at the bottom of the screen.</li>
+      <li><strong>Highlighting Text:</strong> Select Text and Right-click on it to highlight text in the passage.</li>
+      <li><strong>Making Notes:</strong> Right-click to add notes to specific parts of the text.</li>
+      <li><strong>Reviewing Answers:</strong> Flag questions for review by clicking the checkbox next to the question number.</li>
+      <li><strong>Timer:</strong> A countdown timer is visible on the screen, showing the remaining time.</li>
+    </ul>
+
+    <button id="startTestButton">Start Test</button>
+  </div>
+
+  <script>
+    const firstName = localStorage.getItem('studentFirstName') || '';
+    const surname = localStorage.getItem('studentSurname') || '';
+    const studentNumber = localStorage.getItem('studentNumber') || '';
+
+    document.getElementById('studentInfo').textContent = `${firstName} ${surname} | ${studentNumber}`;
+
+    document.getElementById('startTestButton').addEventListener('click', () => {
+      window.location.href = 'ReadingTest1Section1.html';
+    });
+  </script>
+
+</body>
+</html>

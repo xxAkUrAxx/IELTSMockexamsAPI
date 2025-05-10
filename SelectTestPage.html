@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Select IELTS Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .logo-container img {
+      width: 400px;
+    }
+
+    .test-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    max-width: 900px;
+    margin: 40px auto;
+    }
+
+
+    .test-card {
+  background-color: #ffffff;
+  border: 2px solid #0073e6;
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin: 10px;
+}
+
+
+    .test-card h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .deadline {
+      text-align: center;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .deadline span {
+      color: #0073e6;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .test-button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #0073e6;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .test-button:hover {
+      background-color: #005bb5;
+    }
+
+    .test-button.disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo" />
+  </div>
+
+  <div class="test-container" id="testContainer">
+    <!-- Test cards will be injected here -->
+  </div>
+
+  <script>
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzcIRV5fGnU63oEeomDPE1AGYCz6JW49MhijDv_ljtv-ksxqiZ3_j7Jvl6UEi1NPXNthA/exec';
+
+    function formatDate(dateStr) {
+        const options = { day: '2-digit', month: 'short', year: 'numeric' };
+        return new Date(dateStr).toLocaleDateString('en-GB', options);
+    }
+
+    fetch(scriptUrl)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('testContainer');
+            const today = new Date();
+
+            data.forEach(test => {
+                const availableFrom = new Date(test.availableFrom);
+                const deadline = new Date(test.deadline);
+                const isActive = today >= availableFrom && today <= deadline;
+
+                const card = document.createElement('div');
+                card.className = 'test-card';
+
+                const title = document.createElement('h2');
+                title.textContent = test.testName;
+
+                const deadlineText = document.createElement('p');
+                deadlineText.className = 'deadline';
+                deadlineText.innerHTML = `Available from <span>${formatDate(test.availableFrom)}</span> to <span>${formatDate(test.deadline)}</span>`;
+
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'button-group';
+
+                ['Listening', 'Reading', 'Writing'].forEach(type => {
+                    const btn = document.createElement('button');
+                    btn.textContent = type;
+                    btn.className = 'test-button';
+
+                    if (!isActive) {
+                        btn.classList.add('disabled');
+                        btn.disabled = true;
+                    } else {
+                        const testId = test.testName.replace(/\s+/g, '').toUpperCase(); // e.g., Test 1 → TEST1
+                        btn.onclick = () => {
+                            const folder = `${type}Test1`; // Matches folder names exactly
+                            const instructionFile = `${folder}/${type.toLowerCase()}instructions.html`;
+                            window.location.href = `${instructionFile}?testId=${testId}&testType=${type}`;
+                        };
+                    }
+
+                    buttonGroup.appendChild(btn);
+                });
+
+                card.appendChild(title);
+                card.appendChild(deadlineText);
+                card.appendChild(buttonGroup);
+                container.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error('Failed to load test data:', error);
+        });
+</script>
+
+</body>
+</html>

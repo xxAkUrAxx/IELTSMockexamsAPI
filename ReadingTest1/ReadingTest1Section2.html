@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>IELTS Reading Section 2</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+          body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+          }
+          .section-navigation a:hover {
+          background-color: #1c7ed6;
+        }
+        .highlighted {
+        background-color: yellow;
+        }
+          .navbar {
+            background-color: #1e90ff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+          }
+      
+          .navbar img {
+            height: 40px;
+          }
+      
+          .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+          }
+      
+          .student-info {
+            font-size: 14px;
+            text-align: right;
+          }
+      
+          .timer {
+            font-size: 18px;
+            font-weight: bold;
+          }
+      
+          .timer.danger {
+            color: red;
+          }
+      
+          .section-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+          }
+      
+          .section-navigation a {
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s ease;
+          }
+      
+          .section-navigation a:hover {
+            background-color: #1c7ed6;
+          }
+      
+          .section-navigation a.active {
+            background-color: #0b6ccf;
+            border: 2px solid white;
+          }
+      
+          .main-container {
+            display: flex;
+            height: calc(100vh - 220px);
+            margin: 0 30px 0 30px;
+            gap: 30px;
+          }
+      
+          .left-panel,
+          .right-panel {
+            flex: 1;
+            background-color: #f5f5f5;
+            padding: 30px;
+            border-radius: 10px;
+            overflow-y: auto;
+            height: 100%;
+          }
+        </style>
+      </head> 
+      <div id="timeoutModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:40px; border-radius:12px; text-align:center; max-width:400px;">
+          <h2 style="margin-bottom:20px;">Time Is Up!</h2>
+          <p style="margin-bottom:30px;">You have reached the end of the allotted time.</p>
+          <button onclick="location.href='ReadingTest1Results.html'" style="padding:10px 20px; font-size:16px; background-color:#1e90ff; color:white; border:none; border-radius:6px; cursor:pointer;">Continue</button>
+        </div>
+      </div>
+           
+<body>
+
+  <div class="navbar">
+    <img src="../narrow_logo.png" alt="Logo">
+    <div class="header-right">
+      <div class="student-info" id="studentInfoDisplay"></div>
+      <div id="timer" class="timer">60:00</div>
+    </div>
+  </div>
+
+  <!-- Section 2 is active -->
+  <div class="section-navigation">
+    <a href="ReadingTest1Section1.html" onclick="return preventSamePageNav('ReadingTest1Section1.html')">Section 1</a>
+    <a href="ReadingTest1Section2.html" class="active" onclick="return preventSamePageNav('ReadingTest1Section2.html')">Section 2</a>
+    <a href="ReadingTest1Section3.html" onclick="return preventSamePageNav('ReadingTest1Section3.html')">Section 3</a>
+  </div>
+
+  <div class="main-container">
+    <div class="left-panel" id="readingText">
+      <!-- 📖 Reading passage will go here -->
+      <h3>Deforestation in the 21st century</h3>
+      <p><em>When it comes to cutting down trees, satellite data reveals a shift from the patterns of the past</em></p>
+      
+      <p><strong>Paragraph A</strong><br>
+      Globally, roughly 13 million hectares of forest are destroyed each year. Such deforestation has long been driven by farmers desperate to earn a living or by loggers building new roads into pristine forest. But now new data appears to show that big, block clearings that reflect industrial deforestation have come to dominate, rather than these smaller-scale efforts that leave behind long, narrow swaths of cleared land. Geographer Ruth DeFries of Columbia University and her colleagues used satellite images to analyse tree-clearing in countries ringing the tropics, representing 98 per cent of all remaining tropical forest. Instead of the usual ‘fish bone’ signature of deforestation from small-scale operations, large, chunky blocks of cleared land reveal a new motive for cutting down woods.</p>
+      
+      <p><strong>Paragraph B</strong><br>
+      In fact, a statistical analysis of 41 countries showed that forest loss rates were most closely linked with urban population growth and agricultural exports in the early part of the 21st century — even overall population growth was not as strong an influence. ‘In previous decades, deforestation was associated with planned colonisation, resettlement schemes in local areas and farmers clearing land to grow food for subsistence,’ DeFries says. ‘What we’re seeing now is a shift from small-scale farmers driving deforestation to distant demands from urban growth, agricultural trade and exports being more important drivers.’</p>
+      
+      <p><strong>Paragraph C</strong><br>
+      In other words, the increasing urbanisation of the developing world, as populations leave rural areas to concentrate in booming cities, is driving deforestation, rather than containing it. Coupled with this there is an ongoing increase in consumption in the developed world of products that have an impact on forests, whether furniture, shoe leather or chicken feed. ‘One of the really striking characteristics of this century is urbanisation and rapid urban growth in the developing world,’ DeFries says. ‘People in cities need to eat.’ ‘There’s no surprise there,’ observes Scott Poynton, executive director of the Tropical Forest Trust, a Switzerland-based organisation that helps businesses implement and manage sustainable forestry in countries such as Brazil, Congo and Indonesia. ‘It’s not about people chopping down trees. It’s all the people in New York, Europe and elsewhere who want cheap products, primarily food.’</p>
+      
+      <p><strong>Paragraph D</strong><br>
+      DeFries argues that in order to help sustain this increasing urban and global demand, agricultural productivity will need to be increased on lands that have already been cleared. This means that better crop varieties or better management techniques will need to be used on the many degraded and abandoned lands in the tropics. And the Tropical Forest Trust is building management systems to keep illegally harvested wood from ending up in, for example, deck chairs, as well as expanding its efforts to look at how to reduce the ‘forest footprint’ of agricultural products such as palm oil. Poynton says, ‘The point is to give forests value as forests, to keep them as forests and give them a use as forests. They’re not going to be locked away as national parks. That’s not going to happen.’</p>
+      
+      <p><strong>Paragraph E</strong><br>
+      But it is not all bad news. Halts in tropical deforestation have resulted in forest regrowth in some areas where tropical lands were previously cleared. And forest clearing in the Amazon, the world’s largest tropical forest, dropped from roughly 1.9 million hectares a year in the 1990s to 1.6 million hectares a year over the last decade, according to the Brazilian government. ‘We know that deforestation has slowed down in at least the Brazilian Amazon,’ DeFries says. ‘Every place is different. Every country has its own particular situation, circumstances and driving forces.’</p>
+      
+      <p><strong>Paragraph F</strong><br>
+      Regardless of this, deforestation continues, and cutting down forests is one of the largest sources of greenhouse gas emissions from human activity — a double blow that both eliminates a biological system to suck up CO₂ and creates a new source of greenhouse gases in the form of decaying plants. The United Nations Environment Programme estimates that slowing such deforestation could reduce some 50 billion metric tons of CO₂, or more than a year of global emissions. Indeed, international climate negotiations continue to attempt to set up a system to encourage this, known as the UN Development Programme’s fund for reducing emissions from deforestation and forest degradation in developing countries (REDD). If policies [like REDD] are to be effective, we need to understand what the driving forces are behind deforestation, DeFries argues. This is particularly important in the light of new pressures that are on the horizon: the need to reduce our dependence on fossil fuels and find alternative power sources, particularly for private cars, is forcing governments to make products such as biofuels more readily accessible. This will only exacerbate the pressures on tropical forests.</p>
+      
+      <p><strong>Paragraph G</strong><br>
+      But millions of hectares of pristine forest remain to protect, according to this new analysis from Columbia University. Approximately 60 percent of the remaining tropical forests are in countries or areas that currently have little agricultural trade or urban growth. The amount of forest area in places like central Africa, Guyana and Suriname, DeFries notes, is huge. ‘There’s a lot of forest that has not yet faced these pressures.’</p>
+      
+    </div>
+
+    <div class="right-panel" id="questionsArea">
+      <!-- ❓ Questions will go here -->
+      <div class="question-block">
+        <h2>Questions 14–19</h2>
+        <p><strong>Which paragraph contains the following information?</strong></p>
+        <p><em>You may use any letter more than once.</em></p>
+        <ol start="14" style="line-height: 2.5em;">
+          <li>two ways that farming activity might be improved in the future<br>
+            <select id="Reading2_Q14" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+          <li>reference to a fall in the rate of deforestation in one area<br>
+            <select id="Reading2_Q15" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+          <li>the amount of forest cut down annually<br>
+            <select id="Reading2_Q16" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+          <li>how future transport requirements may increase deforestation levels<br>
+            <select id="Reading2_Q17" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+          <li>a reference to the typical shape of early deforested areas<br>
+            <select id="Reading2_Q18" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+          <li>key reasons why forests in some areas have not been cut down<br>
+            <select id="Reading2_Q19" style="width: 100%;">
+              <option value="">-- Select Paragraph --</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+            </select>
+          </li>
+        </ol>
+      </div>
+      
+      <div class="question-block">
+        <h2>Questions 20–21</h2>
+        <p><strong>Which <u>TWO</u> of these reasons do experts give for current patterns of deforestation?</strong></p>
+        <p><em>Choose TWO letters, A–E.</em></p>
+        <div id="Reading2_Q20_21">
+          <label><input type="checkbox" name="Q20_21" value="A"> A. to provide jobs</label><br>
+          <label><input type="checkbox" name="Q20_21" value="B"> B. to create transport routes</label><br>
+          <label><input type="checkbox" name="Q20_21" value="C"> C. to feed city dwellers</label><br>
+          <label><input type="checkbox" name="Q20_21" value="D"> D. to manufacture low-budget consumer items</label><br>
+          <label><input type="checkbox" name="Q20_21" value="E"> E. to meet government targets</label>
+        </div>
+      </div>
+      
+      <div class="question-block">
+        <h2>Questions 22–23</h2>
+        <p><strong>Which <u>TWO</u> of these results are mentioned by the writer of the text?</strong></p>
+        <p><em>Choose TWO letters, A–E.</em></p>
+        <div id="Reading2_Q22_23">
+          <label><input type="checkbox" name="Q22_23" value="A"> A. local food supplies fall</label><br>
+          <label><input type="checkbox" name="Q22_23" value="B"> B. soil becomes less fertile</label><br>
+          <label><input type="checkbox" name="Q22_23" value="C"> C. some areas have new forest growth</label><br>
+          <label><input type="checkbox" name="Q22_23" value="D"> D. some regions become uninhabitable</label><br>
+          <label><input type="checkbox" name="Q22_23" value="E"> E. local economies suffer</label>
+        </div>
+      </div>
+      
+      <div class="question-block">
+        <h2>Questions 24–26</h2>
+        <p><strong>Complete the sentences below.</strong></p>
+        <p><em>Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.</em></p>
+        <ol start="24" style="line-height: 2.5em;">
+          <li>The expression ‘a <input type="text" id="Reading2_Q24" style="width: 200px;">’ is used to assess the amount of wood used in certain types of production.</li>
+          <li>Greenhouse gases result from the <input type="text" id="Reading2_Q25" style="width: 200px;"> that remain after trees have been cut down.</li>
+          <li>About <input type="text" id="Reading2_Q26" style="width: 200px;"> of the world’s tropical rain forests have not experienced deforestation yet.</li>
+        </ol>
+      </div>      
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('contextmenu', function (e) {
+    const selection = window.getSelection();
+    const selectedText = selection.toString();
+
+    if (selectedText.trim() !== "") {
+        e.preventDefault();  // Prevent right-click menu
+
+        const range = selection.getRangeAt(0);
+        const span = document.createElement('span');
+        span.className = 'highlighted';
+        span.textContent = selectedText;
+
+        range.deleteContents();
+        range.insertNode(span);
+
+        selection.removeAllRanges();
+    }
+    });
+    
+    const timerEl = document.getElementById("timer");
+    const startTimeKey = "ReadingTest_StartTime";
+    let tabAwayStart = null;
+  
+    function displayStudentInfo() {
+      const name = localStorage.getItem("Student_Name") || "Name";
+      const surname = localStorage.getItem("Student_Surname") || "Surname";
+      const id = localStorage.getItem("Student_ID") || "ID";
+      document.getElementById("studentInfoDisplay").textContent =
+        `Name: ${name}   Surname: ${surname}   ID: ${id}`;
+    }
+  
+    function preventSamePageNav(target) {
+      if (window.location.pathname.endsWith(target)) {
+        return false;
+      }
+      localStorage.setItem('internalNav', 'true');
+      return true;
+    }
+  
+    document.addEventListener("visibilitychange", () => {
+      const internalNav = localStorage.getItem("internalNav") === "true";
+      if (document.hidden && !internalNav) {
+        alert("You've left the test window. This will be recorded.");
+        tabAwayStart = Date.now();
+      } else if (tabAwayStart !== null) {
+        tabAwayStart = null;
+        localStorage.removeItem("internalNav");
+      }
+    });
+  
+    function updateTimer() {
+  const now = Date.now();
+  const start = parseInt(localStorage.getItem(startTimeKey));
+  const elapsed = now - start;
+  const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  timerEl.className = "timer";
+  if (timeLeft <= 600) timerEl.classList.add("danger");
+
+  if (timeLeft === 0) {
+    document.getElementById("timeoutModal").style.display = "flex";
+  } else {
+    setTimeout(updateTimer, 1000);
+  }
+}
+
+  
+    window.addEventListener("load", () => {
+      displayStudentInfo();
+      if (!localStorage.getItem(startTimeKey)) {
+        localStorage.setItem(startTimeKey, Date.now());
+      }
+      updateTimer();
+  
+      // Load all selects
+      for (let i = 14; i <= 19; i++) {
+        const id = `Reading2_Q${i}`;
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = localStorage.getItem(id) || "";
+          el.addEventListener("change", () => {
+            localStorage.setItem(id, el.value);
+          });
+        }
+      }
+  
+      // Load text inputs
+      for (let i = 24; i <= 26; i++) {
+        const id = `Reading2_Q${i}`;
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = localStorage.getItem(id) || "";
+          el.addEventListener("input", () => {
+            localStorage.setItem(id, el.value);
+          });
+        }
+      }
+  
+      // Checkbox groups
+      limitCheckboxGroup("Q20_21", 2);
+      limitCheckboxGroup("Q22_23", 2);
+    });
+  
+    function limitCheckboxGroup(name, limit) {
+      const checkboxes = document.querySelectorAll(`input[name="${name}"]`);
+  
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", (e) => {
+          const checked = Array.from(checkboxes).filter(cb => cb.checked);
+  
+          if (checked.length > limit) {
+            e.target.checked = false;
+            alert(`You can only choose ${limit} options.`);
+            return;
+          }
+  
+          const values = checked.map(cb => cb.value);
+          localStorage.setItem(`Reading2_${name}`, JSON.stringify(values));
+        });
+  
+        // Restore saved state
+        const stored = JSON.parse(localStorage.getItem(`Reading2_${name}`) || "[]");
+        if (stored.includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+      });
+    }
+  </script>
+  </body>
+  </html>
+  

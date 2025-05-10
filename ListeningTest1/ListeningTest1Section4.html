@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening Test 1 - Section 4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .timer {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #1e90ff;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      z-index: 9;
+    }
+
+    .reset-timer-btn {
+      position: fixed;
+      top: 10px;
+      left: 160px;
+      z-index: 9;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #studentInfo {
+      font-size: 14px;
+      color: #333;
+    }
+
+    h1 {
+      color: #1e90ff;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .instructions {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 200px;
+      padding: 6px;
+      font-size: 14px;
+      margin: 4px 0;
+      text-align: center;
+    }
+
+    .message-box {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 15;
+      display: none;
+    }
+
+    .continue-button {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .blurred {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="timer" id="timerDisplay">00:00 / 00:00</div>
+<button class="reset-timer-btn" onclick="resetTimer()">⏱️ Reset Timer</button>
+
+<div class="info-header">
+  <div id="studentInfo"></div>
+  <img src="../narrow_logo.png" alt="Logo" style="height: 50px;" />
+</div>
+
+<div id="mainContent" class="section centered-content blurred">
+  <h1>PART 4</h1>
+  <div class="instructions">
+    <p><strong>Questions 31 – 40</strong></p>
+    <p>Complete the notes below. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.</p>
+    <h2>Desert Plants</h2>
+  </div>
+
+  <p><strong>Background</strong></p>
+  <ul>
+    <li>Deserts found in what is known as a 31 <input type="text" id="q31" /> (or dry area).</li>
+    <li>Annual rainfall, if any, amounts to a 32 <input type="text" id="q32" />.</li>
+    <li>Soil contains a lot of salt and 33 <input type="text" id="q33" />.</li>
+  </ul>
+
+  <p><strong>General adaptation of desert plants</strong></p>
+  <ul>
+    <li>They can 34 <input type="text" id="q34" /> and store water.</li>
+    <li>They have features that reduce water loss.</li>
+  </ul>
+
+  <p><strong>Examples of adaptations</strong></p>
+  <ul>
+    <li><em>Saguaro Cactus:</em> stores water in its 35 <input type="text" id="q35" />.</li>
+    <li><em>Barrel Cactus:</em> can 36 <input type="text" id="q36" /> or shrink according to the weather.</li>
+    <li><em>Old Man Cactus:</em> has 37 <input type="text" id="q37" /> that reflect the sun.</li>
+    <li><em>Prickly Pear Cactus:</em> has 38 <input type="text" id="q38" /> to keep away the animals.</li>
+    <li><em>Desert Spoon:</em> leaves are 39 <input type="text" id="q39" /> to reduce water loss.</li>
+    <li><em>Aloe Plant:</em> leaf surface acts like a 40 <input type="text" id="q40" /> covering and keeps water inside.</li>
+  </ul>
+</div>
+
+<div class="message-box" id="messageBox">Preparing Results...</div>
+<audio id="audio" preload="auto" src="Part4.mp3"></audio>
+<button class="continue-button" id="continueButton" onclick="resumeAudio()">▶ Continue Listening</button>
+
+<script>
+const audio = document.getElementById("audio");
+const timerDisplay = document.getElementById("timerDisplay");
+const continueBtn = document.getElementById("continueButton");
+const mainContent = document.getElementById("mainContent");
+
+const isFirstVisit = !sessionStorage.getItem("firstVisitDone_Part4");
+const savedTime = parseFloat(localStorage.getItem("Listening4_AudioTime")) || 0;
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+
+function unlockTest() {
+  mainContent.classList.remove("blurred");
+}
+
+function resumeAudio() {
+  const resumeFrom = Math.max(0, savedTime - 2);
+  audio.currentTime = resumeFrom;
+  audio.play().then(() => {
+    unlockTest();
+    continueBtn.style.display = "none";
+  }).catch(console.error);
+}
+
+function startAudio() {
+  if (!isFirstVisit && savedTime > 0) {
+    continueBtn.style.display = "block";
+    mainContent.classList.add("blurred");
+  } else {
+    setTimeout(() => {
+      audio.currentTime = 0;
+      audio.play().then(() => {
+        unlockTest();
+        sessionStorage.setItem("firstVisitDone_Part4", "true");
+      });
+    }, 2000);
+  }
+}
+
+function resetTimer() {
+  audio.pause();
+  audio.currentTime = 0;
+  localStorage.removeItem("Listening4_AudioTime");
+  sessionStorage.removeItem("firstVisitDone_Part4");
+  audio.play();
+}
+
+audio.onended = () => {
+  document.getElementById("messageBox").classList.add("show");
+  setTimeout(() => {
+    window.location.href = "ListeningTest1Results.html";
+  }, 5000);
+};
+
+function displayStudentHeader() {
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const nickname = localStorage.getItem("studentNickname") || "Nickname";
+  const number = localStorage.getItem("studentNumber") || "ID";
+  const infoBox = document.getElementById("studentInfo");
+  infoBox.innerHTML = `<strong>${name} ${surname}</strong><br>Nickname: ${nickname}<br>Student Number: ${number}`;
+}
+
+// --- Anti-Cheat Logic (Tab/Window Focus Only) ---
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    incrementCheatCounter();
+  }
+});
+
+function incrementCheatCounter() {
+  const current = parseInt(localStorage.getItem("Listening_CheatAttempts")) || 0;
+  localStorage.setItem("Listening_CheatAttempts", current + 1);
+}
+
+window.onload = () => {
+  displayStudentHeader();
+  saveAnswers();
+
+  mainContent.classList.add("blurred");
+
+  setInterval(() => {
+    localStorage.setItem("Listening4_AudioTime", audio.currentTime);
+    timerDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration || 0)}`;
+  }, 1000);
+
+  startAudio();
+};
+
+function saveAnswers() {
+  for (let i = 31; i <= 40; i++) {
+    const input = document.getElementById(`q${i}`);
+    const saved = localStorage.getItem(`Listening4_Q${i}`);
+    if (saved) input.value = saved;
+
+    input.addEventListener("input", () => {
+      localStorage.setItem(`Listening4_Q${i}`, input.value.trim());
+    });
+  }
+}
+</script>
+</body>
+</html>

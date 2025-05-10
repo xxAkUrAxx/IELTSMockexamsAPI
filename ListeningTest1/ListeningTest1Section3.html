@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Listening Test 1 - Section 3</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .blurred {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .timer {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #1e90ff;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      z-index: 9;
+    }
+
+    .reset-timer-btn {
+      position: fixed;
+      top: 10px;
+      left: 160px;
+      z-index: 9;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .continue-button {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .message-box {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 30px 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 15;
+      display: none;
+    }
+
+    .message-box.show {
+      display: block;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .section {
+      padding: 40px;
+    }
+
+    h1 {
+      color: #1e90ff;
+    }
+
+    .instructions {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .question-block {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-left: 20px;
+      margin-top: 5px;
+    }
+
+    .info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #studentInfo {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .centered-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="timer" id="timerDisplay">00:00 / 00:00</div>
+<button class="reset-timer-btn" onclick="resetTimer()">⏱️ Reset Timer</button>
+<button class="continue-button" id="continueButton" onclick="resumeAudio()">▶ Continue Listening</button>
+
+<div class="message-box" id="messageBox">Going to Section 4...</div>
+
+<audio id="audio" preload="auto" src="Part3.mp3"></audio>
+
+<div class="info-header">
+  <div id="studentInfo"></div>
+  <img src="../narrow_logo.png" alt="Logo" style="height: 50px;" />
+</div>
+
+<div id="mainContent" class="section centered-content blurred">
+  <h1>PART 3</h1>
+
+  <div class="instructions">
+    <p><strong>Questions 21 – 26</strong></p>
+    <p>Choose the correct letter, <strong>A, B, or C</strong>.</p>
+  </div>
+
+  <div class="question-block">
+    <p>21. What does Ahmed say about last week’s seminar?</p>
+    <label><input type="radio" name="q21" value="A"> A - He wasn’t able to get there on time.</label>
+    <label><input type="radio" name="q21" value="B"> B - He didn’t know all the students.</label>
+    <label><input type="radio" name="q21" value="C"> C - He couldn’t understand everything.</label>
+  </div>
+
+  <div class="question-block">
+    <p>22. What does the tutor say about Ahmed’s preparation?</p>
+    <label><input type="radio" name="q22" value="A"> A - He was better prepared than some students.</label>
+    <label><input type="radio" name="q22" value="B"> B - He completed some useful work.</label>
+    <label><input type="radio" name="q22" value="C"> C - He read some useful articles.</label>
+  </div>
+
+  <div class="question-block">
+    <p>23. What does Ahmed say about his participation?</p>
+    <label><input type="radio" name="q23" value="A"> A - He spoke to his neighbour only.</label>
+    <label><input type="radio" name="q23" value="B"> B - He spoke when others were talking.</label>
+    <label><input type="radio" name="q23" value="C"> C - He felt embarrassed when looked at.</label>
+  </div>
+
+  <div class="question-block">
+    <p>24. What does Ahmed worry about most in seminars?</p>
+    <label><input type="radio" name="q24" value="A"> A - Speaking at the right time.</label>
+    <label><input type="radio" name="q24" value="B"> B - Taking enough notes.</label>
+    <label><input type="radio" name="q24" value="C"> C - Staying focused.</label>
+  </div>
+
+  <div class="question-block">
+    <p>25. What does Ahmed say about his role in the group?</p>
+    <label><input type="radio" name="q25" value="A"> A - He hasn’t thought about it.</label>
+    <label><input type="radio" name="q25" value="B"> B - He’d like to change it.</label>
+    <label><input type="radio" name="q25" value="C"> C - He feels he is acting a part.</label>
+  </div>
+
+  <div class="question-block">
+    <p>26. What does the tutor suggest?</p>
+    <label><input type="radio" name="q26" value="A"> A - Help others with their work.</label>
+    <label><input type="radio" name="q26" value="B"> B - Observe others' behavior.</label>
+    <label><input type="radio" name="q26" value="C"> C - Ask others for their views.</label>
+  </div>
+  <div class="instructions">
+    <p><strong>Questions 27 and 28</strong></p>
+    <p>Choose <strong>TWO letters, A–E</strong>.</p>
+  </div>
+
+  <div class="instructions">
+    <p><strong>Questions 27 and 28</strong></p>
+    <p>Choose <strong>TWO letters, A–E</strong>.</p>
+    <p>What TWO strategies does the tutor suggest for the next seminar?</p>
+  </div>
+  
+  <div class="question-block">
+    <label><input type="checkbox" name="q27_28" value="A"> A - Speak more frequently</label>
+    <label><input type="checkbox" name="q27_28" value="B"> B - Behave in a confident manner</label>
+    <label><input type="checkbox" name="q27_28" value="C"> C - Sit next to someone helpful</label>
+    <label><input type="checkbox" name="q27_28" value="D"> D - Listen to what other people say</label>
+    <label><input type="checkbox" name="q27_28" value="E"> E - Think of questions to ask</label>
+  </div>
+  
+  <div class="instructions">
+    <p><strong>Questions 29 and 30</strong></p>
+    <p>Choose <strong>TWO letters, A–E</strong>.</p>
+    <p>Which TWO suggestions does the tutor make about taking notes?</p>
+  </div>
+  
+  <div class="question-block">
+    <label><input type="checkbox" name="q29_30" value="A"> A - Plan them before the seminar</label>
+    <label><input type="checkbox" name="q29_30" value="B"> B - Note down key words that people say</label>
+    <label><input type="checkbox" name="q29_30" value="C"> C - Note points to say later</label>
+    <label><input type="checkbox" name="q29_30" value="D"> D - Include self-analysis</label>
+    <label><input type="checkbox" name="q29_30" value="E"> E - Rewrite them after the seminar</label>
+  </div>
+
+  </div>
+  
+</div>
+
+<script>
+  const audio = document.getElementById("audio");
+  const timerDisplay = document.getElementById("timerDisplay");
+  const continueBtn = document.getElementById("continueButton");
+  const mainContent = document.getElementById("mainContent");
+
+  const isFirstVisit = !sessionStorage.getItem("firstVisitDone");
+  const savedTime = parseFloat(localStorage.getItem("Listening3_AudioTime")) || 0;
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  }
+
+  function unlockTest() {
+    mainContent.classList.remove("blurred");
+  }
+
+  function resumeAudio() {
+    const resumeFrom = Math.max(0, savedTime - 2);
+    audio.currentTime = resumeFrom;
+    audio.play().then(() => {
+      unlockTest();
+      continueBtn.style.display = "none";
+    }).catch(console.error);
+  }
+
+  function startAudio() {
+    if (!isFirstVisit && savedTime > 0) {
+      continueBtn.style.display = "block";
+    } else {
+      setTimeout(() => {
+        audio.currentTime = 0;
+        audio.play().then(() => {
+          unlockTest();
+          sessionStorage.setItem("firstVisitDone", "true");
+        });
+      }, 2000);
+    }
+  }
+
+  function resetTimer() {
+    audio.pause();
+    audio.currentTime = 0;
+    localStorage.removeItem("Listening3_AudioTime");
+    sessionStorage.removeItem("firstVisitDone");
+    audio.play();
+  }
+
+  audio.onended = () => {
+    document.getElementById("messageBox").classList.add("show");
+    setTimeout(() => {
+      // Redirect to Section 4 instead of Results
+      window.location.href = "ListeningTest1Section4.html";
+    }, 5000);
+  };
+
+  function displayStudentHeader() {
+    const name = localStorage.getItem("studentFirstName") || "Name";
+    const surname = localStorage.getItem("studentSurname") || "Surname";
+    const nickname = localStorage.getItem("studentNickname") || "Nickname";
+    const number = localStorage.getItem("studentNumber") || "ID";
+    const infoBox = document.getElementById("studentInfo");
+    infoBox.innerHTML = `<strong>${name} ${surname}</strong><br>Nickname: ${nickname}<br>Student Number: ${number}`;
+  }
+ // --- Anti-Cheat Logic (Tab/Window Focus Only) ---
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    incrementCheatCounter();
+  }
+});
+
+function incrementCheatCounter() {
+  const current = parseInt(localStorage.getItem("Listening_CheatAttempts")) || 0;
+  localStorage.setItem("Listening_CheatAttempts", current + 1);
+}
+  window.onload = () => {
+    displayStudentHeader();
+    startAudio();
+
+    for (let i = 21; i <= 26; i++) {
+      const saved = localStorage.getItem("Listening3_Q" + i);
+      if (saved) {
+        const btn = document.querySelector(`input[name="q${i}"][value="${saved}"]`);
+        if (btn) btn.checked = true;
+      }
+
+      document.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+        radio.addEventListener("change", () => {
+          localStorage.setItem("Listening3_Q" + i, radio.value);
+        });
+      });
+    }
+
+    handleCheckboxGroup("q27_28", "Listening3_Q27_28");
+    handleCheckboxGroup("q29_30", "Listening3_Q29_30");
+
+    setInterval(() => {
+      localStorage.setItem("Listening3_AudioTime", audio.currentTime);
+      timerDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration || 0)}`;
+    }, 1000);
+  };
+
+  function handleCheckboxGroup(name, storageKey) {
+    const boxes = document.querySelectorAll(`input[name="${name}"]`);
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+    boxes.forEach(cb => {
+      if (saved.includes(cb.value)) cb.checked = true;
+
+      cb.addEventListener("change", () => {
+        const selected = Array.from(boxes).filter(cb => cb.checked).map(cb => cb.value);
+        if (selected.length > 2) {
+          cb.checked = false; // Limit to max 2 selections
+          return;
+        }
+        localStorage.setItem(storageKey, JSON.stringify(selected));
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
+
+

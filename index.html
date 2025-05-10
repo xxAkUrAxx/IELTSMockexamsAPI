@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IELTS Mock Test Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="login-container">
+    <img src="logo.png" alt="Logo" class="site-logo" />
+    <h2>Enter Your Details to Begin</h2>
+
+    <form id="loginForm">
+      <label for="nickname">Nickname</label>
+      <input type="text" id="nickname" name="nickname" required />
+
+      <label for="firstName">Name</label>
+      <input type="text" id="firstName" name="firstName" required />
+
+      <label for="surname">Surname</label>
+      <input type="text" id="surname" name="surname" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="studentNumber">Student Number</label>
+      <input type="text" id="studentNumber" name="studentNumber" required />
+
+      <button type="submit">Continue to Test Selection</button>
+      <div class="error" id="errorMsg"></div>
+    </form>
+  </div>
+
+  <script>
+  // Autofill from localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("nickname").value = localStorage.getItem("studentNickname") || "";
+    document.getElementById("firstName").value = localStorage.getItem("studentFirstName") || "";
+    document.getElementById("surname").value = localStorage.getItem("studentSurname") || "";
+    document.getElementById("email").value = localStorage.getItem("studentEmail") || "";
+    document.getElementById("studentNumber").value = localStorage.getItem("studentNumber") || "";
+  });
+
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const nickname = document.getElementById("nickname").value.trim();
+    const firstName = document.getElementById("firstName").value.trim();
+    const surname = document.getElementById("surname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const studentNumber = document.getElementById("studentNumber").value.trim();
+
+    if (!nickname || !firstName || !surname || !email || !studentNumber) {
+      document.getElementById("errorMsg").textContent = "Please complete all fields.";
+      return;
+    }
+
+    // ✅ Save to localStorage directly
+    localStorage.setItem("studentNickname", nickname);
+    localStorage.setItem("studentFirstName", firstName);
+    localStorage.setItem("studentSurname", surname);
+    localStorage.setItem("studentEmail", email);
+    localStorage.setItem("studentNumber", studentNumber);
+
+    // ✅ Redirect directly without any validation calls
+    window.location.href = "SelectTestPage.html";
+  });
+</script>
+
+</body>
+</html>
