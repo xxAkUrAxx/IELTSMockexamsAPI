@@ -199,12 +199,12 @@
     });
 
     function displayStudentInfo() {
-  const name = localStorage.getItem("Student_Name") || "Name";
-  const surname = localStorage.getItem("Student_Surname") || "Surname";
-  const id = localStorage.getItem("Student_ID") || "ID";
-  document.getElementById("studentInfoDisplay").textContent =
-    `Name: ${name} ${surname} | ID: ${id}`;
-}
+        const name = localStorage.getItem("studentFirstName") || "Name";
+        const surname = localStorage.getItem("studentSurname") || "Surname";
+        const id = localStorage.getItem("studentNumber") || "ID";
+        document.getElementById("studentInfoDisplay").textContent =
+            `Name: ${name} ${surname} | ID: ${id}`;
+    }
 
     document.addEventListener("visibilitychange", function () {
         const internalNav = localStorage.getItem("internalNav") === "true";
@@ -275,9 +275,9 @@
 
     function submitAnswers() {
         const task1 = localStorage.getItem("WritingTask1_Response") || "";
-        const name = localStorage.getItem("Student_Name") || "";
-        const surname = localStorage.getItem("Student_Surname") || "";
-        const id = localStorage.getItem("Student_ID") || "";
+        const name = localStorage.getItem("studentFirstName") || "";
+        const surname = localStorage.getItem("studentSurname") || "";
+        const id = localStorage.getItem("studentNumber") || "";
 
         const resultsObject = {
             studentName: `${name} ${surname}`,
@@ -287,10 +287,10 @@
         };
 
         fetch('/.netlify/functions/saveResults', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(resultsObject)
-})
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(resultsObject)
+        })
         .then(response => response.json())
         .then(data => console.log('Results sent:', data))
         .catch(err => console.error('Failed to send results:', err));
@@ -304,6 +304,7 @@
         link.click();
     }
 </script>
+
 
 </body>
 </html>
