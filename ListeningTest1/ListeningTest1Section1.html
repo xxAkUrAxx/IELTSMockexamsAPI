@@ -124,7 +124,7 @@
   <button class="start-button" onclick="startTest()">▶ Start Listening Test</button>
 </div>
 
-<div class="timer" id="timerDisplay">00:00 / 00:00</div>  <div style="position: fixed; top: 10px; left: 160px; z-index: 9;"> <button onclick="resetTimer()" style="padding: 5px 10px; font-size: 14px;">⏱️ Reset Timer</button> </div>
+<div class="timer" id="timerDisplay">00:00 / 00:00</div>  <div style="position: fixed; top: 10px; left: 160px; z-index: 9;"> 
 <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
   <div id="studentInfo" style="font-size: 14px; color: #333;"></div>
   <img src="../narrow_logo.png" alt="Logo" style="height: 50px;" />
@@ -304,13 +304,7 @@ function incrementCheatCounter() {
       });
     }
   };
-  //Reset timer and audio test button
-  function resetTimer() {
-  audio.play();;
-  audio.currentTime = 0;
-  localStorage.removeItem("Listening1_AudioTime");
-  timerDisplay.textContent = `00:00 / ${formatTime(audio.duration || 0)}`;
-}
+
  // Cumulative Anti-Cheat Tracking for the Entire Listening Test
 let cheatAttempts = parseInt(localStorage.getItem('Listening_CheatAttempts')) || 0;
 
