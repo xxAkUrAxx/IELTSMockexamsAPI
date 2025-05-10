@@ -257,11 +257,12 @@
   timerEl.className = "timer";
   if (timeLeft <= 600) timerEl.classList.add("danger");
 
-  if (timeLeft === 0) {
+ if (timeLeft === 0) {
     document.getElementById("timeoutModal").style.display = "flex";
-  } else {
-    setTimeout(updateTimer, 1000);
-  }
+    setTimeout(() => {
+        window.location.href = "ReadingTest1/ReadingTest1Results.html"; // ✅ Correct path based on your folder structure
+    }, 3000); // Optional delay before navigating
+}
   
 }
 
