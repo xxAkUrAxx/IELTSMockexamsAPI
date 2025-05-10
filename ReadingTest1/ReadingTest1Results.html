@@ -107,60 +107,52 @@
       "YES", "NO", "YES", "YES", "NOT GIVEN",
       "D", "G", "C", "A"
     ];
-// ----------------------- CONFIGURATION -----------------------
-const netlifyFunctionURL = '/.netlify/functions/saveResults'; // ✅ Update if needed
+const netlifyFunctionURL = '/.netlify/functions/saveResults';
 
-// ----------------------- STUDENT INFO DISPLAY -----------------------
-
+// ----------------------- DISPLAY STUDENT INFO -----------------------
 function displayStudentInfo() {
-  const name = localStorage.getItem("Student_Name") || "Name";
-  const surname = localStorage.getItem("Student_Surname") || "Surname";
-  const id = localStorage.getItem("Student_ID") || "ID";
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const id = localStorage.getItem("studentNumber") || "ID";
   document.getElementById("studentInfoDisplay").textContent =
     `Name: ${name} ${surname} | ID: ${id}`;
 }
-
 
 function displayTestName() {
   const test = localStorage.getItem("Test_Name") || "Reading Test 1";
   document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
 }
 
-// ----------------------- ANSWERS AND SCORING -----------------------
+// ----------------------- ANSWER RETRIEVAL & SCORING -----------------------
 function getStudentAnswers() {
-  const allAnswers = [];
-  for (let i = 1; i <= 13; i++) allAnswers.push((localStorage.getItem(`Reading1_Q${i}`) || "").trim());
-  for (let i = 14; i <= 19; i++) allAnswers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
+  const answers = [];
+  for (let i = 1; i <= 13; i++) answers.push((localStorage.getItem(`Reading1_Q${i}`) || "").trim());
+  for (let i = 14; i <= 19; i++) answers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
 
   const q20_21 = JSON.parse(localStorage.getItem("Reading2_Q20_21") || "[]");
-  allAnswers.push(q20_21[0] || "", q20_21[1] || "");
+  answers.push(q20_21[0] || "", q20_21[1] || "");
 
   const q22_23 = JSON.parse(localStorage.getItem("Reading2_Q22_23") || "[]");
-  allAnswers.push(q22_23[0] || "", q22_23[1] || "");
+  answers.push(q22_23[0] || "", q22_23[1] || "");
 
-  for (let i = 24; i <= 26; i++) allAnswers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
+  for (let i = 24; i <= 26; i++) answers.push((localStorage.getItem(`Reading2_Q${i}`) || "").trim());
 
   const section3 = JSON.parse(localStorage.getItem("Section3Answers") || "{}");
-  for (let i = 27; i <= 40; i++) allAnswers.push((section3[`q${i}`] || "").trim());
+  for (let i = 27; i <= 40; i++) answers.push((section3[`q${i}`] || "").trim());
 
-  return allAnswers;
+  return answers;
 }
 
 function scoreTest() {
-  // Assuming `answers` is already defined with correct answers
   const studentAnswers = getStudentAnswers();
   let score = 0;
 
   for (let i = 0; i < 40; i++) {
-    const correct = answers[i];
+    const correct = correctAnswers[i];
     const student = studentAnswers[i];
 
     if (Array.isArray(correct)) {
-      if (i >= 6 && i <= 12) {
-        if (correct.includes(student)) score++;
-      } else {
-        if (correct.map(c => c.toUpperCase()).includes(student.toUpperCase())) score++;
-      }
+      if (correct.map(c => c.toUpperCase()).includes(student.toUpperCase())) score++;
     } else {
       if (correct.toUpperCase() === student.toUpperCase()) score++;
     }
@@ -170,8 +162,8 @@ function scoreTest() {
 
 function convertToBand(score) {
   const bands = [
-    [39, 9.0], [37, 8.5], [35, 8.0], [33, 7.5], [30, 7.0], [27, 6.5], 
-    [23, 6.0], [19, 5.5], [15, 5.0], [13, 4.5], [10, 4.0], [7, 3.5], 
+    [39, 9.0], [37, 8.5], [35, 8.0], [33, 7.5], [30, 7.0], [27, 6.5],
+    [23, 6.0], [19, 5.5], [15, 5.0], [13, 4.5], [10, 4.0], [7, 3.5],
     [5, 3.0], [3, 2.5], [1, 2.0], [0, 0.0]
   ];
   for (const [min, band] of bands) if (score >= min) return band;
@@ -182,7 +174,7 @@ function showAnswerComparison(studentAnswers) {
   table.innerHTML = '';
 
   for (let i = 0; i < 40; i++) {
-    const correct = answers[i];
+    const correct = correctAnswers[i];
     const student = studentAnswers[i] || "";
     const correctDisplay = Array.isArray(correct) ? correct.join(" / ") : correct;
     const isCorrect = Array.isArray(correct)
@@ -205,8 +197,8 @@ function showAnswerComparison(studentAnswers) {
 // ----------------------- PNG & SUBMISSION -----------------------
 function downloadPNG() {
   const element = document.querySelector(".results-box");
-  const name = localStorage.getItem("Student_Name") || "Name";
-  const surname = localStorage.getItem("Student_Surname") || "Surname";
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
   const test = (localStorage.getItem("Test_Name") || "ReadingTest1").replace(/\s+/g, '_');
   const filename = `${test}_${name}_${surname}.png`;
 
@@ -225,9 +217,9 @@ function submitFinalResults() {
   html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
     const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
 
-    const name = localStorage.getItem("Student_Name") || "Name";
-    const surname = localStorage.getItem("Student_Surname") || "Surname";
-    const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
+    const name = localStorage.getItem("studentFirstName") || "Name";
+    const surname = localStorage.getItem("studentSurname") || "Surname";
+    const studentNumber = localStorage.getItem("studentNumber") || "UnknownID";
     const test = localStorage.getItem("Test_Name") || "ReadingTest1";
     const score = document.getElementById("scoreDisplay")?.textContent || "N/A";
     const band = document.getElementById("bandDisplay")?.textContent || "N/A";
@@ -272,9 +264,10 @@ window.onload = () => {
 
   showAnswerComparison(studentAnswers);
 
-  // Auto-send results after loading
+  // Auto-submit results after 3 seconds.
   setTimeout(submitFinalResults, 3000);
 };
 </script>
+
 </body>
 </html>
