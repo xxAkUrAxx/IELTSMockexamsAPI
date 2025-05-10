@@ -115,9 +115,9 @@
 
   <!-- Section 2 is active -->
   <div class="section-navigation">
-    <a href="../ReadingTest1Section1.html" onclick="return preventSamePageNav('ReadingTest1Section1.html')">Section 1</a>
-    <a href="../ReadingTest1Section2.html" class="active" onclick="return preventSamePageNav('ReadingTest1Section2.html')">Section 2</a>
-    <a href="../ReadingTest1Section3.html" onclick="return preventSamePageNav('ReadingTest1Section3.html')">Section 3</a>
+    <a href="ReadingTest1Section1.html" onclick="return preventSamePageNav('ReadingTest1Section1.html')">Section 1</a>
+    <a href="ReadingTest1Section2.html" class="active" onclick="return preventSamePageNav('ReadingTest1Section2.html')">Section 2</a>
+    <a href="ReadingTest1Section3.html" onclick="return preventSamePageNav('ReadingTest1Section3.html')">Section 3</a>
   </div>
 
   <div class="main-container">
@@ -299,7 +299,7 @@
   if (timeLeft === 0) {
     document.getElementById("timeoutModal").style.display = "flex";
     setTimeout(() => {
-        window.location.href = "ReadingTest1/ReadingTest1Results.html"; // ✅ Correct path based on your folder structure
+        window.location.href = "ReadingTest1Results.html"; // ✅ Correct path based on your folder structure
     }, 3000); // Optional delay before navigating
 }
 }
