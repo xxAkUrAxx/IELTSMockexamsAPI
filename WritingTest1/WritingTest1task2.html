@@ -177,121 +177,131 @@
     const counter = document.getElementById("wordCount2");
 
     textarea.addEventListener("input", () => {
-      const text = textarea.value.trim();
-      const words = text === "" ? 0 : text.split(/\s+/).length;
-      counter.textContent = `Words: ${words}`;
-      localStorage.setItem("WritingTask2_Response", text);
+        const text = textarea.value.trim();
+        const words = text === "" ? 0 : text.split(/\s+/).length;
+        counter.textContent = `Words: ${words}`;
+        localStorage.setItem("WritingTask2_Response", text);
     });
 
     window.addEventListener("load", () => {
-      displayStudentInfo();
-      const saved = localStorage.getItem("WritingTask2_Response");
-      if (saved) {
-        textarea.value = saved;
-        const words = saved.trim() === "" ? 0 : saved.trim().split(/\s+/).length;
-        counter.textContent = `Words: ${words}`;
-      }
-      activeSeconds = parseInt(localStorage.getItem(activeTimeKey)) || 0;
+        displayStudentInfo();
+        const saved = localStorage.getItem("WritingTask2_Response");
+        if (saved) {
+            textarea.value = saved;
+            const words = saved.trim() === "" ? 0 : saved.trim().split(/\s+/).length;
+            counter.textContent = `Words: ${words}`;
+        }
+        activeSeconds = parseInt(localStorage.getItem(activeTimeKey)) || 0;
     });
 
     function displayStudentInfo() {
-      const name = localStorage.getItem("Student_Name") || "Name";
-      const surname = localStorage.getItem("Student_Surname") || "Surname";
-      const id = localStorage.getItem("Student_ID") || "ID";
-      document.getElementById("studentInfoDisplay").textContent =
-        `Name: ${name}   Surname: ${surname}   ID: ${id}`;
+        const name = localStorage.getItem("Student_Name") || "Name";
+        const surname = localStorage.getItem("Student_Surname") || "Surname";
+        const id = localStorage.getItem("Student_ID") || "ID";
+        document.getElementById("studentInfoDisplay").textContent =
+            `Name: ${name}   Surname: ${surname}   ID: ${id}`;
     }
 
     document.addEventListener("visibilitychange", function () {
-      const internalNav = localStorage.getItem("internalNav") === "true";
-
-      if (document.hidden) {
-        if (!internalNav) {
-          tabSwitchCount++;
-          tabAwayStart = Date.now();
-          alert("You've left the test window. This will be recorded.");
+        const internalNav = localStorage.getItem("internalNav") === "true";
+        if (document.hidden) {
+            if (!internalNav) {
+                tabSwitchCount++;
+                tabAwayStart = Date.now();
+                alert("You've left the test window. This will be recorded.");
+            }
+        } else if (tabAwayStart !== null) {
+            tabAwaySeconds += Math.floor((Date.now() - tabAwayStart) / 1000);
+            tabAwayStart = null;
+            localStorage.removeItem("internalNav");
         }
-      } else if (tabAwayStart !== null) {
-        tabAwaySeconds += Math.floor((Date.now() - tabAwayStart) / 1000);
-        tabAwayStart = null;
-        localStorage.removeItem("internalNav");
-      }
     });
 
     function preventSamePageNav(target) {
-      if (window.location.pathname.endsWith(target)) {
-        return false;
-      }
-      localStorage.setItem('internalNav', 'true');
-      return true;
+        if (window.location.pathname.endsWith(target)) {
+            return false;
+        }
+        localStorage.setItem('internalNav', 'true');
+        return true;
     }
 
     if (!localStorage.getItem(startTimeKey)) {
-      localStorage.setItem(startTimeKey, Date.now());
+        localStorage.setItem(startTimeKey, Date.now());
     }
 
     function updateTimer() {
-      const now = Date.now();
-      const start = parseInt(localStorage.getItem(startTimeKey));
-      const elapsed = now - start;
-      const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      timerEl.className = "timer";
-      if (timeLeft <= 600) timerEl.classList.add("danger");
+        const now = Date.now();
+        const start = parseInt(localStorage.getItem(startTimeKey));
+        const elapsed = now - start;
+        const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        timerEl.className = "timer";
+        if (timeLeft <= 600) timerEl.classList.add("danger");
 
-      if (timeLeft > 0) {
-        setTimeout(updateTimer, 1000);
-      } else {
-        timerEl.textContent = "00:00";
-        document.getElementById("timeUpMessage").style.display = "block";
-        document.getElementById("submitBtn").style.display = "block";
-      }
+        if (timeLeft > 0) {
+            setTimeout(updateTimer, 1000);
+        } else {
+            timerEl.textContent = "00:00";
+            document.getElementById("timeUpMessage").style.display = "block";
+            document.getElementById("submitBtn").style.display = "block";
+            textarea.disabled = true;
+            submitAnswers();
+        }
     }
     updateTimer();
 
     setInterval(() => {
-      if (Date.now() - lastActivity < 10000) {
-        activeSeconds++;
-        localStorage.setItem(activeTimeKey, activeSeconds);
-      }
+        if (Date.now() - lastActivity < 10000) {
+            activeSeconds++;
+            localStorage.setItem(activeTimeKey, activeSeconds);
+        }
     }, 1000);
 
     ["mousemove", "keydown", "scroll", "click"].forEach(evt =>
-      window.addEventListener(evt, () => lastActivity = Date.now())
+        window.addEventListener(evt, () => lastActivity = Date.now())
     );
 
     function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins} minutes ${secs} seconds`;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins} minutes ${secs} seconds`;
     }
 
     function submitAnswers() {
-      const task1 = localStorage.getItem("WritingTask1_Response") || "";
-      const task2 = localStorage.getItem("WritingTask2_Response") || "";
-      const name = localStorage.getItem("Student_Name") || "";
-      const surname = localStorage.getItem("Student_Surname") || "";
-      const id = localStorage.getItem("Student_ID") || "";
-      const activeTime = formatTime(parseInt(localStorage.getItem(activeTimeKey)) || 0);
-      const tabAway = formatTime(tabAwaySeconds);
+        const task1 = localStorage.getItem("WritingTask1_Response") || "";
+        const task2 = localStorage.getItem("WritingTask2_Response") || "";
+        const name = localStorage.getItem("Student_Name") || "";
+        const surname = localStorage.getItem("Student_Surname") || "";
+        const id = localStorage.getItem("Student_ID") || "";
 
-      const content = `Task 1:\n${task1}\n\nTask 2:\n${task2}
-\n\nStudent Info:
-Name: ${name} ${surname}
-ID: ${id}
-Active Time: ${activeTime}
-Tab Switches: ${tabSwitchCount}
-Time Away From Tab: ${tabAway}`;
+        const resultsObject = {
+            studentName: `${name} ${surname}`,
+            studentNumber: id,
+            testName: "IELTS Writing Test",
+            task1Response: task1,
+            task2Response: task2
+        };
 
-      const blob = new Blob([content], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `IELTS_Writing_Submission_${name || "student"}.txt`;
-      link.click();
+        fetch('/.netlify/functions/saveResults', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(resultsObject)
+        })
+        .then(response => response.json())
+        .then(data => console.log('Results sent:', data))
+        .catch(err => console.error('Failed to send results:', err));
+
+        const content = `Task 1:\n${task1}\n\nTask 2:\n${task2}\n\nStudent Info:\nName: ${name} ${surname}\nID: ${id}`;
+
+        const blob = new Blob([content], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `IELTS_Writing_Submission_${name || "student"}.txt`;
+        link.click();
     }
-  </script>
+</script>
 
 </body>
 </html>
