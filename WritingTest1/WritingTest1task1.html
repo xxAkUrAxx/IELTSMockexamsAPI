@@ -286,7 +286,7 @@
             task1Response: task1
         };
 
-        fetch('/.netlify/functions/saveResults', {
+        fetch('/.netlify/netlify_functions/saveResults', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(resultsObject)
