@@ -20,52 +20,23 @@
       box-shadow: none !important;
       overflow: visible;
     }
-    h1 {
-      color: #1e90ff;
-    }
-    .score {
-      font-size: 24px;
-      margin-top: 20px;
-    }
-    .band {
-      font-size: 28px;
-      color: #2c3e50;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .feedback {
-      margin-top: 20px;
-      font-size: 18px;
-    }
+    h1 { color: #1e90ff; }
+    .score { font-size: 24px; margin-top: 20px; }
+    .band { font-size: 28px; color: #2c3e50; font-weight: bold; margin-top: 10px; }
+    .feedback { margin-top: 20px; font-size: 18px; }
     .student-info, .test-name {
-      text-align: right;
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 10px;
+      text-align: right; font-size: 14px; color: #555; margin-bottom: 10px;
     }
     button {
-      padding: 10px 15px;
-      font-size: 14px;
-      margin-top: 20px;
-      cursor: pointer;
+      padding: 10px 15px; font-size: 14px; margin-top: 20px; cursor: pointer;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-    }
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
-    }
-    th {
-      background-color: #f0f0f0;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    th, td { padding: 8px; border-bottom: 1px solid #ccc; text-align: left; }
+    th { background-color: #f0f0f0; }
   </style>
 </head>
 <body>
-  <div class="results-box">
+  <div class="results-box" id="resultsContainer">
     <div class="student-info" id="studentInfoDisplay"></div>
     <div class="test-name" id="testNameDisplay"></div>
     <h1>Your IELTS Reading Score</h1>
@@ -87,35 +58,22 @@
     </table>
   </div>
 
-  <script>
-   
-    const answers = [
-      "TRUE", "FALSE", "TRUE", "TRUE", "NOT GIVEN", "FALSE",
-      ["a wire", "wire"],
-      ["solar power"],
-      ["an inflatable dummy", "inflatable dummy"],
-      ["a mark"],
-      ["an extending arm", "extending arm"],
-      ["movement"],
-      ["two way communication", "two-way communication"],
-      "D", "E", "A", "F", "A", "G",
-      ["C", "D"], ["D", "C"], ["B", "C"], ["C", "B"],
-      ["forest footprint"],
-      ["decaying plants"],
-      ["60%", "60 percent", "60 per cent"],
-      "C", "B", "A", "D", "B",
-      "YES", "NO", "YES", "YES", "NOT GIVEN",
-      "D", "G", "C", "A"
-    ];
+<script>
+const correctAnswers = [
+  "TRUE", "FALSE", "TRUE", "TRUE", "NOT GIVEN", "FALSE",
+  ["a wire", "wire"], ["solar power"], ["an inflatable dummy", "inflatable dummy"], ["a mark"],
+  ["an extending arm", "extending arm"], ["movement"], ["two way communication", "two-way communication"],
+  "D", "E", "A", "F", "A", "G", ["C", "D"], ["D", "C"], ["B", "C"], ["C", "B"],
+  ["forest footprint"], ["decaying plants"], ["60%", "60 percent", "60 per cent"],
+  "C", "B", "A", "D", "B", "YES", "NO", "YES", "YES", "NOT GIVEN", "D", "G", "C", "A"
+];
 const netlifyFunctionURL = '/.netlify/functions/saveResults';
 
-// ----------------------- DISPLAY STUDENT INFO -----------------------
 function displayStudentInfo() {
-  const name = localStorage.getItem("studentFirstName") || "Name";
-  const surname = localStorage.getItem("studentSurname") || "Surname";
-  const id = localStorage.getItem("studentNumber") || "ID";
-  document.getElementById("studentInfoDisplay").textContent =
-    `Name: ${name} ${surname} | ID: ${id}`;
+  const name = localStorage.getItem("Student_Name") || "Name";
+  const surname = localStorage.getItem("Student_Surname") || "Surname";
+  const id = localStorage.getItem("Student_ID") || "ID";
+  document.getElementById("studentInfoDisplay").textContent = `Name: ${name} ${surname} | ID: ${id}`;
 }
 
 function displayTestName() {
@@ -123,7 +81,6 @@ function displayTestName() {
   document.getElementById("testNameDisplay").textContent = `Test: ${test}`;
 }
 
-// ----------------------- ANSWER RETRIEVAL & SCORING -----------------------
 function getStudentAnswers() {
   const answers = [];
   for (let i = 1; i <= 13; i++) answers.push((localStorage.getItem(`Reading1_Q${i}`) || "").trim());
@@ -146,7 +103,6 @@ function getStudentAnswers() {
 function scoreTest() {
   const studentAnswers = getStudentAnswers();
   let score = 0;
-
   for (let i = 0; i < 40; i++) {
     const correct = correctAnswers[i];
     const student = studentAnswers[i];
@@ -172,7 +128,6 @@ function convertToBand(score) {
 function showAnswerComparison(studentAnswers) {
   const table = document.getElementById("comparisonBody");
   table.innerHTML = '';
-
   for (let i = 0; i < 40; i++) {
     const correct = correctAnswers[i];
     const student = studentAnswers[i] || "";
@@ -194,11 +149,10 @@ function showAnswerComparison(studentAnswers) {
   }
 }
 
-// ----------------------- PNG & SUBMISSION -----------------------
 function downloadPNG() {
-  const element = document.querySelector(".results-box");
-  const name = localStorage.getItem("studentFirstName") || "Name";
-  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const element = document.getElementById("resultsContainer");
+  const name = localStorage.getItem("Student_Name") || "Name";
+  const surname = localStorage.getItem("Student_Surname") || "Surname";
   const test = (localStorage.getItem("Test_Name") || "ReadingTest1").replace(/\s+/g, '_');
   const filename = `${test}_${name}_${surname}.png`;
 
@@ -210,17 +164,15 @@ function downloadPNG() {
   });
 }
 
-const name = localStorage.getItem("Student_Name") || "Name";
-const surname = localStorage.getItem("Student_Surname") || "Surname";
-const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
-
+function submitFinalResults() {
+  const element = document.getElementById("resultsContainer");
+  if (!element) return console.error("Results container not found.");
 
   html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
     const imageBase64 = canvas.toDataURL("image/png").split(',')[1];
-
-    const name = localStorage.getItem("studentFirstName") || "Name";
-    const surname = localStorage.getItem("studentSurname") || "Surname";
-    const studentNumber = localStorage.getItem("studentNumber") || "UnknownID";
+    const name = localStorage.getItem("Student_Name") || "Name";
+    const surname = localStorage.getItem("Student_Surname") || "Surname";
+    const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
     const test = localStorage.getItem("Test_Name") || "ReadingTest1";
     const score = document.getElementById("scoreDisplay")?.textContent || "N/A";
     const band = document.getElementById("bandDisplay")?.textContent || "N/A";
@@ -247,7 +199,6 @@ const studentNumber = localStorage.getItem("Student_ID") || "UnknownID";
   });
 }
 
-// ----------------------- ON LOAD -----------------------
 window.onload = () => {
   displayStudentInfo();
   displayTestName();
@@ -265,7 +216,6 @@ window.onload = () => {
 
   showAnswerComparison(studentAnswers);
 
-  // Auto-submit results after 3 seconds.
   setTimeout(submitFinalResults, 3000);
 };
 </script>
