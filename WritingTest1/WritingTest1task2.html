@@ -284,11 +284,11 @@
             task2Response: task2
         };
 
-        fetch('/.netlify/netlify_functions/saveResults', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(resultsObject)
-        })
+        fetch('/.netlify/functions/saveResults', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(resultsObject)
+})
         .then(response => response.json())
         .then(data => console.log('Results sent:', data))
         .catch(err => console.error('Failed to send results:', err));
