@@ -70,10 +70,13 @@ const correctAnswers = [
 const netlifyFunctionURL = '/.netlify/functions/saveResults';
 
 function displayStudentInfo() {
-  const name = localStorage.getItem("Student_Name") || "Name";
-  const surname = localStorage.getItem("Student_Surname") || "Surname";
-  const id = localStorage.getItem("Student_ID") || "ID";
-  document.getElementById("studentInfoDisplay").textContent = `Name: ${name} ${surname} | ID: ${id}`;
+  const name = localStorage.getItem("studentFirstName") || "Name";
+  const surname = localStorage.getItem("studentSurname") || "Surname";
+  const nickname = localStorage.getItem("studentNickname") || "Nickname";
+  const id = localStorage.getItem("studentNumber") || "ID";
+
+  document.getElementById("studentInfoDisplay").textContent = 
+    `Name: ${name} ${surname} | Nickname: ${nickname} | ID: ${id}`;
 }
 
 function displayTestName() {
