@@ -368,22 +368,22 @@
     });
   
     function updateTimer() {
-      const now = Date.now();
-      const start = parseInt(localStorage.getItem(startTimeKey));
-      const elapsed = now - start;
-      const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      timerEl.className = "timer";
-      if (timeLeft <= 600) timerEl.classList.add("danger");
-  
-      if (timeLeft === 0) {
-        document.getElementById("timeoutModal").style.display = "flex";
-      } else {
-        setTimeout(updateTimer, 1000);
-      }
-    }
+  const now = Date.now();
+  const start = parseInt(localStorage.getItem(startTimeKey));
+  const elapsed = now - start;
+  const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  timerEl.className = "timer";
+  if (timeLeft <= 600) timerEl.classList.add("danger");
+
+  if (timeLeft === 0) {
+    document.getElementById("timeoutModal").style.display = "flex";
+    setTimeout(() => {
+        window.location.href = "ReadingTest1Results.html"; // ✅ Correct path based on your folder structure
+    }, 3000); // Optional delay before navigating
+}
   
     // 🔒 Save answers on input/change
     function saveAnswers() {
@@ -416,24 +416,26 @@
         if (radio) radio.checked = true;
         else if (select) select.value = val;
         else if (text) text.value = val;
-      }
-    }
-  
-    window.addEventListener("load", () => {
-      displayStudentInfo();
-  
-      if (!localStorage.getItem(startTimeKey)) {
-        localStorage.setItem(startTimeKey, Date.now());
-      }
-      updateTimer();
-  
-      // Restore saved answers and begin tracking changes
-      restoreAnswers();
-      document.querySelectorAll("input, select").forEach(el => {
-        el.addEventListener("change", saveAnswers);
-        el.addEventListener("input", saveAnswers);
-      });
-    });
-  </script>
+    };
+  }
+}
+
+window.addEventListener("load", () => {
+  displayStudentInfo();
+
+  if (!localStorage.getItem(startTimeKey)) {
+    localStorage.setItem(startTimeKey, Date.now());
+  }
+  updateTimer();
+
+  // Restore saved answers and begin tracking changes
+  restoreAnswers();
+  document.querySelectorAll("input, select").forEach(el => {
+    el.addEventListener("change", saveAnswers);
+    el.addEventListener("input", saveAnswers);
+  });
+});
+</script>
+
 </body>
 </html>
