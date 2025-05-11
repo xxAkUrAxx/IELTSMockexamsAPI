@@ -336,106 +336,144 @@
   </div>
 
   <script>
-    const timerEl = document.getElementById("timer");
-    const startTimeKey = "ReadingTest_StartTime";
-    let tabAwayStart = null;
-  
-    function displayStudentInfo() {
-      const name = localStorage.getItem("Student_Name") || "Name";
-      const surname = localStorage.getItem("Student_Surname") || "Surname";
-      const id = localStorage.getItem("Student_ID") || "ID";
-      document.getElementById("studentInfoDisplay").textContent =
+// Disable right-click and highlight selected text
+document.addEventListener('contextmenu', function (e) {
+    const selection = window.getSelection();
+    const selectedText = selection.toString();
+
+    if (selectedText.trim() !== "") {
+        e.preventDefault();  // Prevent right-click menu
+
+        const range = selection.getRangeAt(0);
+        const span = document.createElement('span');
+        span.className = 'highlighted';
+        span.textContent = selectedText;
+
+        range.deleteContents();
+        range.insertNode(span);
+
+        selection.removeAllRanges();
+    }
+});
+
+const timerEl = document.getElementById("timer");
+const startTimeKey = "ReadingTest_StartTime";
+let tabAwayStart = null;
+
+function displayStudentInfo() {
+    const name = localStorage.getItem("Student_Name") || "Name";
+    const surname = localStorage.getItem("Student_Surname") || "Surname";
+    const id = localStorage.getItem("Student_ID") || "ID";
+    document.getElementById("studentInfoDisplay").textContent =
         `Name: ${name}   Surname: ${surname}   ID: ${id}`;
-    }
-  
-    function preventSamePageNav(target) {
-      if (window.location.pathname.endsWith(target)) {
-        return false;
-      }
-      localStorage.setItem('internalNav', 'true');
-      return true;
-    }
-  
-    document.addEventListener("visibilitychange", () => {
-      const internalNav = localStorage.getItem("internalNav") === "true";
-      if (document.hidden && !internalNav) {
+}
+
+function preventSamePageNav(target) {
+    if (window.location.pathname.endsWith(target)) return false;
+    localStorage.setItem('internalNav', 'true');
+    return true;
+}
+
+document.addEventListener("visibilitychange", () => {
+    const internalNav = localStorage.getItem("internalNav") === "true";
+    if (document.hidden && !internalNav) {
         alert("You've left the test window. This will be recorded.");
         tabAwayStart = Date.now();
-      } else if (tabAwayStart !== null) {
+    } else if (tabAwayStart !== null) {
         tabAwayStart = null;
         localStorage.removeItem("internalNav");
-      }
-    });
-  
-    function updateTimer() {
-  const now = Date.now();
-  const start = parseInt(localStorage.getItem(startTimeKey));
-  const elapsed = now - start;
-  const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
-  const mins = Math.floor(timeLeft / 60);
-  const secs = timeLeft % 60;
-  timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  timerEl.className = "timer";
-  if (timeLeft <= 600) timerEl.classList.add("danger");
-
-  if (timeLeft === 0) {
-    document.getElementById("timeoutModal").style.display = "flex";
-    setTimeout(() => {
-        window.location.href = "ReadingTest1Results.html"; // ✅ Correct path based on your folder structure
-    }, 3000); // Optional delay before navigating
-}
-  
-    // 🔒 Save answers on input/change
-    function saveAnswers() {
-      const answers = {};
-      for (let i = 1; i <= 40; i++) {
-        const radio = document.querySelector(`input[name='q${i}']:checked`);
-        const select = document.querySelector(`select[name='q${i}']`);
-        const text = document.querySelector(`input[name='q${i}']`);
-  
-        if (radio) answers[`q${i}`] = radio.value;
-        else if (select) answers[`q${i}`] = select.value;
-        else if (text) answers[`q${i}`] = text.value;
-      }
-      localStorage.setItem("Section3Answers", JSON.stringify(answers));
     }
-  
-    // ♻️ Restore answers on page load
-    function restoreAnswers() {
-      const saved = JSON.parse(localStorage.getItem("Section3Answers"));
-      if (!saved) return;
-  
-      for (let i = 1; i <= 40; i++) {
-        const val = saved[`q${i}`];
-        if (!val) continue;
-  
-        const radio = document.querySelector(`input[name='q${i}'][value='${val}']`);
-        const select = document.querySelector(`select[name='q${i}']`);
-        const text = document.querySelector(`input[name='q${i}']`);
-  
+});
+
+function updateTimer() {
+    const now = Date.now();
+    const start = parseInt(localStorage.getItem(startTimeKey));
+    const elapsed = now - start;
+    const timeLeft = Math.max(0, Math.floor((60 * 60 * 1000 - elapsed) / 1000));
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    timerEl.className = "timer";
+    if (timeLeft <= 600) timerEl.classList.add("danger");
+
+    if (timeLeft === 0) {
+        document.getElementById("timeoutModal").style.display = "flex";
+        setTimeout(() => {
+            window.location.href = "ReadingTest1Results.html";
+        }, 3000);
+    }
+}
+
+function saveAnswers() {
+    const answers = {};
+    document.querySelectorAll("input[name], select[name]").forEach(el => {
+        if (el.type === 'radio' && el.checked) {
+            answers[el.name] = el.value;
+        } else if (el.tagName === 'SELECT' || el.type === 'text') {
+            answers[el.name] = el.value;
+        }
+    });
+    localStorage.setItem("Section3Answers", JSON.stringify(answers));
+}
+
+function restoreAnswers() {
+    const saved = JSON.parse(localStorage.getItem("Section3Answers"));
+    if (!saved) return;
+
+    Object.keys(saved).forEach(name => {
+        const value = saved[name];
+        const radio = document.querySelector(`input[name='${name}'][value='${value}']`);
+        const select = document.querySelector(`select[name='${name}']`);
+        const text = document.querySelector(`input[name='${name}']`);
+
         if (radio) radio.checked = true;
-        else if (select) select.value = val;
-        else if (text) text.value = val;
-    };
-  }
+        else if (select) select.value = value;
+        else if (text) text.value = value;
+    });
+}
+
+function limitCheckboxGroup(name, limit) {
+    const checkboxes = document.querySelectorAll(`input[name="${name}"]`);
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", (e) => {
+            const checked = Array.from(checkboxes).filter(cb => cb.checked);
+            if (checked.length > limit) {
+                e.target.checked = false;
+                alert(`You can only choose ${limit} options.`);
+            }
+            const values = checked.map(cb => cb.value);
+            localStorage.setItem(`CheckboxGroup_${name}`, JSON.stringify(values));
+        });
+
+        // Restore saved checkbox state
+        const stored = JSON.parse(localStorage.getItem(`CheckboxGroup_${name}`) || "[]");
+        if (stored.includes(checkbox.value)) checkbox.checked = true;
+    });
 }
 
 window.addEventListener("load", () => {
-  displayStudentInfo();
+    displayStudentInfo();
 
-  if (!localStorage.getItem(startTimeKey)) {
-    localStorage.setItem(startTimeKey, Date.now());
-  }
-  updateTimer();
+    if (!localStorage.getItem(startTimeKey)) {
+        localStorage.setItem(startTimeKey, Date.now());
+    }
 
-  // Restore saved answers and begin tracking changes
-  restoreAnswers();
-  document.querySelectorAll("input, select").forEach(el => {
-    el.addEventListener("change", saveAnswers);
-    el.addEventListener("input", saveAnswers);
-  });
+    updateTimer();
+    restoreAnswers();
+
+    document.querySelectorAll("input, select").forEach(el => {
+        el.addEventListener("change", saveAnswers);
+        el.addEventListener("input", saveAnswers);
+    });
+
+    // Example: Apply checkbox limits if you have such groups
+    limitCheckboxGroup("Q20_21", 2);
+    limitCheckboxGroup("Q22_23", 2);
+
+    setInterval(updateTimer, 1000); // Ensure timer keeps updating every second
 });
 </script>
+
 
 </body>
 </html>
