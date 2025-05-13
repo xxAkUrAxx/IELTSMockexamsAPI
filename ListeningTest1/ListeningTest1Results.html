@@ -163,7 +163,7 @@ function displayTestName() {
 
 function getStudentAnswers() {
   const answers = {};
-  for (let i = 1; i <= 30; i++) {
+  for (let i = 1; i <= 40; i++) {
     const key = `Listening${Math.ceil(i / 10)}_Q${i}`;
     answers[`Q${i}`] = (localStorage.getItem(key) || '').trim();
   }
@@ -225,6 +225,7 @@ function populateComparisonTable(answers) {
   const table = document.getElementById("comparisonBody");
   table.innerHTML = '';
 
+  // Q1 to Q26: Single-answer questions
   for (let i = 1; i <= 26; i++) {
     const correct = correctAnswers[`Q${i}`] || [];
     const user = answers[`Q${i}`] || '';
@@ -234,22 +235,61 @@ function populateComparisonTable(answers) {
         <td>Q${i}</td>
         <td>${user}</td>
         <td>${correct.join(' / ')}</td>
-        <td class="${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? '✔ Correct' : '✘ Wrong'}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">
+          ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+        </td>
       </tr>`;
   }
 
-  [['Q27_28', '27-28'], ['Q29_30', '29-30']].forEach(([key, label]) => {
-    const correct = correctAnswers[key] || [];
-    const user = answers[key] || [];
-    const points = evaluateMultiSelect(user, correct);
+  // Q27 and Q28: Multi-select displayed separately
+  const multiAnswers27_28 = answers['Q27_28'] || [];
+  ['27', '28'].forEach((qNum) => {
+    const user = multiAnswers27_28[parseInt(qNum) - 27] || '';
+    const correct = correctAnswers['Q27_28'] || [];
+    const isCorrect = correct.includes(user);
     table.innerHTML += `
       <tr>
-        <td>Q${label}</td>
-        <td>${user.join(', ')}</td>
+        <td>Q${qNum}</td>
+        <td>${user}</td>
         <td>${correct.join(' / ')}</td>
-        <td class="${points > 0 ? 'correct' : 'wrong'}">${points > 0 ? `✔ ${points} Correct` : '✘ Wrong'}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">
+          ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+        </td>
       </tr>`;
   });
+
+  // Q29 and Q30: Multi-select displayed separately
+  const multiAnswers29_30 = answers['Q29_30'] || [];
+  ['29', '30'].forEach((qNum) => {
+    const user = multiAnswers29_30[parseInt(qNum) - 29] || '';
+    const correct = correctAnswers['Q29_30'] || [];
+    const isCorrect = correct.includes(user);
+    table.innerHTML += `
+      <tr>
+        <td>Q${qNum}</td>
+        <td>${user}</td>
+        <td>${correct.join(' / ')}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">
+          ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+        </td>
+      </tr>`;
+  });
+
+  // Q31 to Q40: Single-answer questions
+  for (let i = 31; i <= 40; i++) {
+    const correct = correctAnswers[`Q${i}`] || [];
+    const user = answers[`Q${i}`] || '';
+    const isCorrect = correct.includes(user);
+    table.innerHTML += `
+      <tr>
+        <td>Q${i}</td>
+        <td>${user}</td>
+        <td>${correct.join(' / ')}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">
+          ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+        </td>
+      </tr>`;
+  }
 }
 
 // ----------------------- PNG & SUBMISSION FUNCTIONS -----------------------
